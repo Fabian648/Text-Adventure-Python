@@ -27,6 +27,9 @@ commands = {
     "left": map.left
 }
 
+dealercommands = {}
+
+
 if __name__ == "__main__":
     characters.PLAYER[characters.NAME] = input("Enter your name: ")
     map.init(10, 10)
