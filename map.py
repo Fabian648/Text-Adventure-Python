@@ -7,14 +7,25 @@ y = 0
 
 dealerx = 0
 dealery = 0
+castlex = 0
+castley = 0
 
 
 def init(width, height):
-    global y, x, state, dealerx, dealery
+    global y, x, state, dealerx, dealery, castlex, castley
 
-    dealerx = random.randint(0, width-1)
-    dealery = random.randint(0, height-1)
-    print(dealerx, dealery)
+    run = True
+
+    while run:
+
+        dealerx = random.randint(0, width-1)
+        dealery = random.randint(0, height-1)
+        castlex = random.randint(0, width-1)
+        dealery = random.randint(0, height-1)
+
+        if not castlex == dealerx and castley == dealery:
+            run = False
+
     for x in range(width):
         fields = []
         for y in range(height):
@@ -29,6 +40,14 @@ def init(width, height):
     if state[dealerx][dealery]:
         state[dealerx][dealery].clear()
         state[dealerx][dealery].append("dealer")
+    else:
+        state[dealerx][dealery].append("dealer")
+
+    if state[castlex][castley]:
+        state[castlex][castley].clear()
+        state[castlex][castley].append("castle")
+    else:
+        state[castlex][castley].append("castle")
 
 
 def get_enemies():
@@ -68,13 +87,15 @@ def left():
 
 
 def print_current_enemies():
-    global y, x, state, dealerx, dealery
+    global y, x, state, dealerx, dealery, castlex, castley
     print("You look around and see ")
 
-    if state[x][y] == []:
+    if not state[x][y]:
         return print("nothing")
     elif x == dealerx and y == dealery:
         return print("dealer")
+    elif x == castlex and y == castley:
+        return print("castle")
 
     for enemy in state[x][y]:
         print(enemy[characters.NAME])

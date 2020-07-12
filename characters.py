@@ -30,6 +30,8 @@ PLAYER_MAX_HEALTH = 500
 
 PLAYER = ["", PLAYER_MAX_HEALTH, 100, 5, 0]
 
+rest_available = True
+rest_counter = 0
 
 
 def get_hit(enemy, attacker=PLAYER):
@@ -52,5 +54,13 @@ def die(character):
 
 
 def game_rest_player():
-    PLAYER[HEALTH] = PLAYER_MAX_HEALTH
-    print("You were healed\nNow you have " + str(PLAYER[HEALTH]) + " hp")
+    global rest_counter, rest_available
+
+    if rest_available == True:
+
+        PLAYER[HEALTH] = PLAYER_MAX_HEALTH
+        print("You were healed\nNow you have " + str(PLAYER[HEALTH]) + " hp")
+        rest_available = False
+        rest_counter = 5
+    else:
+        print("Sorry, you can't rest because the goblins are chasing you")

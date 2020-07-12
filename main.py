@@ -2,8 +2,10 @@ import random
 import map
 import characters
 
+
 def game_help():
     print(commands.keys())
+
 
 def fight():
     enemies = map.get_enemies()
@@ -14,11 +16,13 @@ def fight():
             enemies.remove(current_enemy)
         for enemy in enemies:
             characters.get_hit(characters.PLAYER, current_enemy)
-        print("You are wounded and have " + str(characters.PLAYER[characters.HEALTH]) + " hp left")
+        print("You are wounded and have " +
+              str(characters.PLAYER[characters.HEALTH]) + " hp left")
+
 
 commands = {
     "help": game_help,
-    "quit": lambda : exit("You commit suicide and leave this world."),
+    "quit": lambda: exit("You commit suicide and leave this world."),
     "fight": fight,
     "rest": characters.game_rest_player,
     "forward": map.forward,
@@ -38,6 +42,12 @@ if __name__ == "__main__":
         command = input("> ").lower().split(" ")[0]
         if command in commands:
             commands[command]()
+            if characters.rest_counter == 1 or characters.rest_counter == 0:
+                characters.rest_available = True
+            elif command in ("left", "right", "forward", "backwards"):
+                characters.rest_counter -= 1
+
         else:
-            print("You run around in circles and don't know what to do.")
+            print(
+                "You run around in circles and don't know what to do.\n Keep moving to rest")
         map.print_current_enemies()
