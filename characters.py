@@ -1,3 +1,5 @@
+import os
+
 
 # Character
 NAME = 0
@@ -23,6 +25,10 @@ POSSIBLE_ENEMIES = (
     ["ork", 200, 40, 1, 0],
     ["archer", 75, 50, 1, 0]
 )
+
+Inventory = [["sword", 100, 250, True, False]]
+Hand = [["hand", -2, 30, True, True]]
+
 
 ENEMY_COUNT = len(POSSIBLE_ENEMIES) - 1
 
@@ -64,3 +70,49 @@ def game_rest_player():
         rest_counter = 5
     else:
         print("Sorry, you can't rest because the goblins are chasing you")
+
+
+def inv():
+    global Inventory, Hand
+
+    run = True
+
+    os.system("cls")
+    counter = 1
+    for i in Inventory:
+        print(str(counter) + "\t" + i[NAME])
+        counter += 1
+
+    def put(item):
+        global run
+        if Hand:
+            for i in Hand:
+                Inventory.append(i)
+                Hand.clear()
+
+        for i in Inventory:
+            if i[NAME] == item:
+                Inventory.remove(i)
+                Hand.append(i)
+        run = False
+
+    def use(item):
+        pass
+
+    while run:
+        command = input("> ").lower().split(" ")
+
+        if len(command) > 2 or len(command) == 1:
+            return print("You run around in circles and don't know what to do.")
+
+        inv_commands = {
+            "use": use(command[1]),
+            "put": put(command[1])
+        }
+
+        if command in inv_commands:
+            inv_commands[command[0]]()
+    print("Your inventory was intresting!!")
+
+
+inv()
