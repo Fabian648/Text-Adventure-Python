@@ -38,7 +38,7 @@ PLAYER = ["", PLAYER_MAX_HEALTH, 100, 5, 0]
 
 rest_available = True
 rest_counter = 0
-
+run = True
 
 def get_hit(enemy, attacker=PLAYER):
     weapon = attacker[WEAPON]
@@ -71,33 +71,31 @@ def game_rest_player():
     else:
         print("Sorry, you can't rest because the goblins are chasing you")
 
+def put(item):
+    global run
+    if Hand:
+        for i in Hand:
+            Inventory.append(i)
+            Hand.clear()
+
+    for i in Inventory:
+        if i[NAME] == item:
+            Inventory.remove(i)
+            Hand.append(i)
+    run = False
+
+def use(item):
+    pass
 
 def inv():
-    global Inventory, Hand
+    global Inventory, Hand, run
 
-    run = True
 
     os.system("cls")
     counter = 1
     for i in Inventory:
         print(str(counter) + "\t" + i[NAME])
         counter += 1
-
-    def put(item):
-        global run
-        if Hand:
-            for i in Hand:
-                Inventory.append(i)
-                Hand.clear()
-
-        for i in Inventory:
-            if i[NAME] == item:
-                Inventory.remove(i)
-                Hand.append(i)
-        run = False
-
-    def use(item):
-        pass
 
     while run:
         command = input("> ").lower().split(" ")
