@@ -40,6 +40,7 @@ rest_available = True
 rest_counter = 0
 run = True
 
+
 def get_hit(enemy, attacker=PLAYER):
     weapon = attacker[WEAPON]
     counter = 0
@@ -71,6 +72,7 @@ def game_rest_player():
     else:
         print("Sorry, you can't rest because the goblins are chasing you")
 
+
 def put(item):
     global run
     if Hand:
@@ -84,12 +86,13 @@ def put(item):
             Hand.append(i)
     run = False
 
+
 def use(item):
     pass
 
+
 def inv():
     global Inventory, Hand, run
-
 
     os.system("cls")
     counter = 1
@@ -108,9 +111,7 @@ def inv():
             "put": put(command[1])
         }
 
-        if command in inv_commands:
-            inv_commands[command[0]]()
+        if command[0] in inv_commands:
+            inv_commands[command[0]]
+
     print("Your inventory was intresting!!")
-
-
-inv()
