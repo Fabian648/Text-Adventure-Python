@@ -7,6 +7,7 @@ HEALTH = 1
 DAMAGE = 2
 DEFENCE = 3
 WEAPON = 4
+COINS = 5
 
 # Weapons
 NAME = 0
@@ -22,8 +23,8 @@ WEAPONS = (
 )
 
 POSSIBLE_ENEMIES = (
-    ["ork", 200, 40, 1, 0],
-    ["archer", 75, 50, 1, 0]
+    ["ork", 200, 40, 1, 0, 2],
+    ["archer", 75, 50, 1, 0, 0.5]
 )
 
 Inventory = [["sword", 100, 250, True, False]]
@@ -34,7 +35,7 @@ ENEMY_COUNT = len(POSSIBLE_ENEMIES) - 1
 
 PLAYER_MAX_HEALTH = 200
 
-PLAYER = ["", PLAYER_MAX_HEALTH, 100, 5, 0]
+PLAYER = ["", PLAYER_MAX_HEALTH, 100, 5, 0, 0]
 
 rest_available = True
 rest_counter = 0
@@ -58,6 +59,9 @@ def die(character):
     if character == PLAYER:
         exit("Wasted. Try again.")
     print(character[NAME] + " is dead")
+    PLAYER[COINS] += float(character[COINS])
+
+
 
 
 def game_rest_player():
