@@ -1,6 +1,9 @@
 import os
 
 
+savetime = 0
+savelanguage = ""
+
 # Character
 NAME = 0
 HEALTH = 1

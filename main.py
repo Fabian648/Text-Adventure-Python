@@ -7,12 +7,6 @@ from pathlib import Path
 
 cfg = ConfigParser()
 
-# Variablen zum Auslesen aus der Configdatei
-savetime = 0
-savename = ""
-savecoins = 0
-savelanguage = ""
-
 interim = 0
 
 
@@ -35,23 +29,25 @@ def fight():
 
 
 def load():
-    data = input("Please enter the name of the data: ")
+
+    namedata = input("Please enter the name: ")
+    data = "Config_TA_" + namedata + ".txt"
     cfg.read(data)
 
     characters.PLAYER[characters.NAME] = cfg.get("config_TA", "player")
-    savelanguage = cfg.get("config_TA", "language")
+    characters.savelanguage = cfg.get("config_TA", "language")
     characters.PLAYER[characters.COINS] = float(cfg.get("config_TA", "coins"))
-    savetime = float(cfg.get("config_TA", "time"))
+    characters.savetime = float(cfg.get("config_TA", "time"))
     characters.PLAYER[characters.HEALTH] = float(cfg.get("config_TA", "HP"))
 
 def save():
-
+    global interim
     #von Datei time rauslesen wenn sie exestiert
 
-    tosavetime = interim + savetime
+    tosavetime = interim + characters.savetime
 
     cfg["config_TA"] = {"Player": characters.PLAYER[characters.NAME],
-                        "Language": "en", "coins": characters.PLAYER[characters.COINS], "time": tosavetime, "HP": characters.PLAYER[characters.HEALTH]}
+                        "language": "en", "coins": characters.PLAYER[characters.COINS], "time": tosavetime, "HP": characters.PLAYER[characters.HEALTH]}
     cfg["config_Game"] = {}#Rest Zeit usw. Map Größe
 
     with open("Config_TA_"+ characters.PLAYER[characters.NAME]+".txt", "w") as file:
@@ -61,7 +57,8 @@ def Playergetmoney():
     print("You have " + str(characters.PLAYER[characters.COINS]) + " coins")
 
 def Playerinfo():
-    pass
+
+    print("Info:\n\tName: " + characters.PLAYER[characters.NAME] + "\n\tLanguage: " + characters.savelanguage + "\n\tCoins: " + str(characters.PLAYER[characters.COINS]) + "\n\tPlaytime: " + str((interim + characters.savetime)) + "\n\tHealth: " + str(characters.PLAYER[characters.HEALTH]) + "\n\n\n")
 
 commands = {
     "help": game_help,
@@ -75,7 +72,7 @@ commands = {
     "save": save,
     "load": load,
     "money": Playergetmoney,
-    "Player": Playerinfo
+    "player": Playerinfo
 }
 
 dealercommands = {}
@@ -103,4 +100,3 @@ if __name__ == "__main__":
                 "You run around in circles and don't know what to do")
         map.print_current_enemies()
         interim = interim + (time.time() - start)
-    
