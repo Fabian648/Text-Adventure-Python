@@ -46,8 +46,9 @@ if __name__ == "__main__":
                 characters.rest_available = True
             elif command in ("left", "right", "forward", "backwards"):
                 characters.rest_counter -= 1
-
+        elif characters.rest_available == False:
+            print("You run around in circles and don't know what to do\nKeep moving to rest")
         else:
             print(
-                "You run around in circles and don't know what to do.\n Keep moving to rest")
+                "You run around in circles and don't know what to do")
         map.print_current_enemies()

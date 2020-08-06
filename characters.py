@@ -32,7 +32,7 @@ Hand = [["hand", -2, 30, True, True]]
 
 ENEMY_COUNT = len(POSSIBLE_ENEMIES) - 1
 
-PLAYER_MAX_HEALTH = 500
+PLAYER_MAX_HEALTH = 200
 
 PLAYER = ["", PLAYER_MAX_HEALTH, 100, 5, 0]
 
