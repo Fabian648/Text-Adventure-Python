@@ -10,6 +10,7 @@ DAMAGE = 2
 DEFENCE = 3
 WEAPON = 4
 COINS = 5
+STRENGTH = 6
 
 PlayerFightEp = 0
 nextfightlevel = 0
@@ -29,8 +30,8 @@ WEAPONS = (
 )
 
 POSSIBLE_ENEMIES = (
-    ["ork", 200, 40, 1, 0, 2],
-    ["archer", 75, 50, 1, 0, 0.5]
+    ["ork", 200, 40, 1, 0, 2, 0],
+    ["archer", 75, 50, 1, 0, 0.5, 0]
 )
 
 skillfightlevel = {
@@ -44,14 +45,14 @@ skillfightlevel = {
 
 
 Inventory = [["sword", 100, 250, True, False]]
-Hand = [["hand", -2, 30, True, True]]
+Hand = []
 
 
 ENEMY_COUNT = len(POSSIBLE_ENEMIES) - 1
 
 PLAYER_MAX_HEALTH = 200
 
-PLAYER = ["", PLAYER_MAX_HEALTH, 100, 5, 0, 0]
+PLAYER = ["", PLAYER_MAX_HEALTH, 30, 5, 0, 0, 0]
 
 rest_available = True
 rest_counter = 0
@@ -61,12 +62,17 @@ run = True
 def get_hit(enemy, attacker=PLAYER):
     weapon = attacker[WEAPON]
     counter = 0
-    for i in WEAPONS:
-        if counter == weapon:
-            damage = i[ATTACK]
-        counter += 1
+    damage = 0
 
-    enemy[HEALTH] = enemy[HEALTH] - ((damage * PLAYER[DAMAGE] / 100) / enemy[DEFENCE])
+    if weapon != 0:
+        for i in WEAPONS:
+            if counter == weapon:
+                damage = i[ATTACK]
+            counter += 1
+    else:
+        damage = PLAYER[DAMAGE]
+
+    enemy[HEALTH] = enemy[HEALTH] - ((damage / 100 * PLAYER[STRENGTH] + damage) / enemy[DEFENCE])
     if enemy[HEALTH] <= 0:
         die(enemy)
 
@@ -78,7 +84,9 @@ def die(character):
         exit("Wasted. Try again.")
 
     print(character[NAME] + " is dead")
-    PlayerFightEp += 50
+    # Abfrage ob max level
+    if fightlevel != len(skillfightlevel) - 1: 
+        PlayerFightEp += 50
     PLAYER[COINS] += float(character[COINS])
 
 
@@ -94,37 +102,48 @@ def game_rest_player():
     else:
         print("Sorry, you can't rest because the goblins are chasing you")
 
+
 def skillsupdate():
     global skillfightlevel, PlayerFightEp, nextfightlevel, fightlevel
-
-    print(fightlevel)
-    print(skillfightlevel[fightlevel])
-
 
     for i in skillfightlevel:
         if skillfightlevel[i] == True:
             fightlevel = i
             nextfightlevel = i+1
 
-    if PlayerFightEp != 0:
-        if PlayerFightEp/ (nextfightlevel * 200) * 100 >= 100:
+    if fightlevel != len(skillfightlevel) - 1:
+        if PlayerFightEp != 0:
+            if PlayerFightEp/ (nextfightlevel * 200) * 100 == 100:
 
-            PLAYER[2] = nextfightlevel * 1.25 * 100
-            skillfightlevel[nextfightlevel] = True
-            PlayerFightEp = 0
-    
-    PLAYER[2] = fightlevel * 1.25 * 100
+                PLAYER[STRENGTH] = nextfightlevel * 1.25 * 100
+                skillfightlevel[nextfightlevel] = True
+                PlayerFightEp = 0
+                fightlevel = nextfightlevel
 
+            elif PlayerFightEp/ (nextfightlevel * 200) * 100 > 100:
+                # Berechnung der übrigen EP
+                resultps = PlayerFightEp/ (nextfightlevel * 200) * 100
+                resultps = (nextfightlevel * 200) / 100 * (resultps - 100)
+                PlayerFightEp = resultps
 
-    
+                PLAYER[STRENGTH] = nextfightlevel * 1.25 * 100
+                skillfightlevel[nextfightlevel] = True
+                fightlevel = nextfightlevel
+                
+        #PLAYER[STRENGTH] = fightlevel * 1.25 * 100
+
+    else:
+        PLAYER[STRENGTH] = fightlevel * 1.25 * 100
 
 
 def skills():
     global PlayerFightEp
 
     os.system("cls")
-
-    print("Skills:\n\nFight:\t" + str((PlayerFightEp / (nextfightlevel * 200) * 100)) + "\n\n\n\n")
+    if fightlevel != len(skillfightlevel) - 1:
+        print("Skills:\n\nFight:\t" + str((PlayerFightEp / (nextfightlevel * 200) * 100)) + "\n\n\n\n")
+    else:
+        print("Skills:\n\nFight:\tmax. level\n\n\n\n")
 
 
 def put(item):
@@ -169,3 +188,10 @@ def inv():
             inv_commands[command[0]]
 
     print("Your inventory was intresting!!")
+
+def update():
+    global savelanguage
+
+    # Nur jetzt wo es eine Sprache gibt
+    if savelanguage == "":
+        savelanguage = "en"

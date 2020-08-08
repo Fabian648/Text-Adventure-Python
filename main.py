@@ -4,6 +4,7 @@ import characters
 from configparser import ConfigParser
 import time
 from pathlib import Path
+import os
 
 cfg = ConfigParser()
 
@@ -27,48 +28,54 @@ def fight():
               str(characters.PLAYER[characters.HEALTH]) + " hp left")
 
 
-
 def load():
 
     namedata = input("Please enter the name: ")
     data = "Config_TA_" + namedata + ".txt"
     cfg.read(data)
 
-    #Playerdaten
+    # Playerdaten
     characters.PLAYER[characters.NAME] = cfg.get("config_TA", "player")
     characters.savelanguage = cfg.get("config_TA", "language")
     characters.PLAYER[characters.COINS] = float(cfg.get("config_TA", "coins"))
     characters.savetime = float(cfg.get("config_TA", "time"))
     characters.PLAYER[characters.HEALTH] = float(cfg.get("config_TA", "HP"))
 
-    #Skilldaten
+    # Skilldaten
     characters.PlayerFightEp = float(cfg.get("config_Skill", "AttackEP"))
     characters.fightlevel = int(cfg.get("config_Skill", "Attacklevel"))
     characters.skillfightlevel[characters.fightlevel] = True
 
+
 def save():
     global interim
-    #von Datei time rauslesen wenn sie exestiert
+    # von Datei time rauslesen wenn sie exestiert
 
     tosavetime = interim + characters.savetime
 
     cfg["config_TA"] = {"Player": characters.PLAYER[characters.NAME],
                         "language": "en", "coins": characters.PLAYER[characters.COINS], "time": tosavetime, "HP": characters.PLAYER[characters.HEALTH]}
-    cfg["config_Game"] = {}# Rest Zeit usw. Map Größe
-    cfg["config_Skill"] = {"Attacklevel": characters.fightlevel, "AttackEP": characters.PlayerFightEp}# Alles zu Skills
+    cfg["config_Game"] = {}  # Rest Zeit usw. Map Größe
+    cfg["config_Skill"] = {"Attacklevel": characters.fightlevel,
+                           "AttackEP": characters.PlayerFightEp}  # Alles zu Skills
 
-    with open("Config_TA_"+ characters.PLAYER[characters.NAME]+".txt", "w") as file:
+    with open("Config_TA_" + characters.PLAYER[characters.NAME]+".txt", "w") as file:
         cfg.write(file)
+
 
 def Playergetmoney():
     print("You have " + str(characters.PLAYER[characters.COINS]) + " coins")
 
-def Playerinfo():
 
-    print("Info:\n\tName: " + characters.PLAYER[characters.NAME] + "\n\tLanguage: " + characters.savelanguage + "\n\tCoins: " + str(characters.PLAYER[characters.COINS]) + "\n\tDamage: " + str(characters.PLAYER[characters.DAMAGE]) + "\tLevel: " + str(characters.fightlevel) + "\n\tPlaytime: " + str((interim + characters.savetime)) + "\n\tHealth: " + str(characters.PLAYER[characters.HEALTH]) + "\n\tFight Ep: "+ str(characters.PlayerFightEp) + "\n\n\n")
+def Playerinfo():
+    os.system("cls")
+    print("Info:\n\tName: " + characters.PLAYER[characters.NAME] + "\n\tLanguage: " + characters.savelanguage + "\n\tCoins: " + str(characters.PLAYER[characters.COINS]) + "\n\tStrength: " + str(characters.PLAYER[characters.STRENGTH]
+                                                                                                                                                                                                  ) + "%\tLevel: " + str(characters.fightlevel) + "\n\tPlaytime: " + str((interim + characters.savetime)) + "\n\tHealth: " + str(characters.PLAYER[characters.HEALTH]) + "\n\tFight Ep: " + str(characters.PlayerFightEp) + "\n\n\n")
+
 
 def run():
     pass
+
 
 commands = {
     "help": game_help,
@@ -84,11 +91,10 @@ commands = {
     "load": load,
     "money": Playergetmoney,
     "player": Playerinfo,
-    "skills": characters.skills
+    "skill": characters.skills
 }
 
 dealercommands = {}
-
 
 
 if __name__ == "__main__":
@@ -96,7 +102,11 @@ if __name__ == "__main__":
     map.init(10, 10)
     print("Type help to list the available commands\n")
     while True:
+        # Update Methoden
+        characters.update()
         characters.skillsupdate()
+
+
         start = time.time()
         command = input("> ").lower().split(" ")[0]
         if command in commands:
@@ -105,6 +115,9 @@ if __name__ == "__main__":
                 characters.rest_available = True
             elif command in ("left", "right", "forward", "backwards"):
                 characters.rest_counter -= 1
+
+            
+
         elif characters.rest_available == False:
             print(
                 "You run around in circles and don't know what to do\nKeep moving to rest")
@@ -113,3 +126,5 @@ if __name__ == "__main__":
                 "You run around in circles and don't know what to do")
         map.print_current_enemies()
         interim = interim + (time.time() - start)
+
+
