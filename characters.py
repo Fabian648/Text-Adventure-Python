@@ -130,7 +130,6 @@ def skillsupdate():
                 skillfightlevel[nextfightlevel] = True
                 fightlevel = nextfightlevel
                 
-        #PLAYER[STRENGTH] = fightlevel * 1.25 * 100
 
     else:
         PLAYER[STRENGTH] = fightlevel * 1.25 * 100
@@ -141,7 +140,7 @@ def skills():
 
     os.system("cls")
     if fightlevel != len(skillfightlevel) - 1:
-        print("Skills:\n\nFight:\t" + str((PlayerFightEp / (nextfightlevel * 200) * 100)) + "\n\n\n\n")
+        print("Skills:\n\nFight:\t" + str((PlayerFightEp / (nextfightlevel * 200) * 100)) + "%\n\n\n\n")
     else:
         print("Skills:\n\nFight:\tmax. level\n\n\n\n")
 

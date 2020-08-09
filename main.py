@@ -15,19 +15,6 @@ def game_help():
     print(commands.keys())
 
 
-def fight():
-    enemies = map.get_enemies()
-    while len(enemies) > 0:
-        current_enemy = enemies[0]
-        characters.get_hit(current_enemy)
-        if current_enemy[characters.HEALTH] <= 0:
-            enemies.remove(current_enemy)
-        for enemy in enemies:
-            characters.get_hit(characters.PLAYER, current_enemy)
-        print("You are wounded and have " +
-              str(characters.PLAYER[characters.HEALTH]) + " hp left")
-
-
 def load():
 
     namedata = input("Please enter the name: ")
@@ -69,8 +56,11 @@ def Playergetmoney():
 
 def Playerinfo():
     os.system("cls")
+    time_all = interim + characters.savetime
+
+
     print("Info:\n\tName: " + characters.PLAYER[characters.NAME] + "\n\tLanguage: " + characters.savelanguage + "\n\tCoins: " + str(characters.PLAYER[characters.COINS]) + "\n\tStrength: " + str(characters.PLAYER[characters.STRENGTH]
-                                                                                                                                                                                                  ) + "%\tLevel: " + str(characters.fightlevel) + "\n\tPlaytime: " + str((interim + characters.savetime)) + "\n\tHealth: " + str(characters.PLAYER[characters.HEALTH]) + "\n\tFight Ep: " + str(characters.PlayerFightEp) + "\n\n\n")
+                                                                                                                                                                                                  ) + "%\tLevel: " + str(characters.fightlevel) + "\n\tPlaytime: " + str(time_all) + "\n\tHealth: " + str(characters.PLAYER[characters.HEALTH]) + "\n\tFight Ep: " + str(characters.PlayerFightEp) + "\n\n\n")
 
 
 def run():
@@ -80,8 +70,6 @@ def run():
 commands = {
     "help": game_help,
     "quit": lambda: exit("You commit suicide and leave this world."),
-    "fight": fight,
-    "run": run,
     "rest": characters.game_rest_player,
     "forward": map.forward,
     "backwards": map.backwards,
@@ -126,5 +114,3 @@ if __name__ == "__main__":
                 "You run around in circles and don't know what to do")
         map.print_current_enemies()
         interim = interim + (time.time() - start)
-
-
