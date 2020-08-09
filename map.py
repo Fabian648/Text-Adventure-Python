@@ -131,15 +131,15 @@ def print_current_enemies():
 
     for enemy in state[x][y]:
         print(enemy[characters.NAME])
-        
-        commands = {
-            "fight": fight,
-            "runaway": runaway
-        }
+    
+    commands = {
+        "fight": fight,
+        "runaway": runaway
+    }
 
-        while True:
-            command = input("What you wanna do?\n")
+    while True:
+        command = input("What you wanna do?\n")
 
-            if command in commands:
-                commands[command]()
-                return False
+        if command in commands:
+            commands[command]()
+            return False
