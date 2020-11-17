@@ -31,6 +31,7 @@ WEAPONS = (
 )
 
 POSSIBLE_ENEMIES = (
+    # hier wäre ein kurze beschreibung der werte nützlich
     ["ork", 200, 40, 1, 0, 2, 0],
     ["archer", 75, 50, 1, 0, 0.5, 0]
 )
