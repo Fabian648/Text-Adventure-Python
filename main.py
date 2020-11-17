@@ -79,7 +79,10 @@ commands = {
     "load": load,
     "money": Playergetmoney,
     "player": Playerinfo,
-    "skill": characters.skills
+    "skill": characters.skills,
+    "shop": characters.shop,
+    "inv": characters.inv,
+    "use": characters.use
 }
 
 dealercommands = {}
@@ -90,6 +93,7 @@ if __name__ == "__main__":
     map.init(10, 10)
     print("Type help to list the available commands\n")
     while True:
+
         # Update Methoden
         characters.update()
         characters.skillsupdate()

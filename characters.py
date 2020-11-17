@@ -22,11 +22,12 @@ DURABILITY = 1
 ATTACK = 2
 DISTANCE = 3
 AVAILABLE = 4
+PRICE = 5
 
 WEAPONS = (
-    ["hand", -2, 30, True, True],
-    ["sword", 100, 250, True, False],
-    ["bow", 200, 75, False, False]
+    ["hand", -2, 30, True, True, 0],
+    ["sword", 100, 250, True, False, 75],
+    ["bow", 200, 75, False, False, 100]
 )
 
 POSSIBLE_ENEMIES = (
@@ -42,11 +43,8 @@ skillfightlevel = {
     4: False
 }
 
-
-
 Inventory = [["sword", 100, 250, True, False]]
 Hand = []
-
 
 ENEMY_COUNT = len(POSSIBLE_ENEMIES) - 1
 
@@ -85,7 +83,7 @@ def die(character):
 
     print(character[NAME] + " is dead")
     # Abfrage ob max level
-    if fightlevel != len(skillfightlevel) - 1: 
+    if fightlevel != len(skillfightlevel) - 1:
         PlayerFightEp += 50
     PLAYER[COINS] += float(character[COINS])
 
@@ -109,27 +107,27 @@ def skillsupdate():
     for i in skillfightlevel:
         if skillfightlevel[i] == True:
             fightlevel = i
-            nextfightlevel = i+1
+            nextfightlevel = i + 1
 
     if fightlevel != len(skillfightlevel) - 1:
         if PlayerFightEp != 0:
-            if PlayerFightEp/ (nextfightlevel * 200) * 100 == 100:
+            if PlayerFightEp / (nextfightlevel * 200) * 100 == 100:
 
                 PLAYER[STRENGTH] = nextfightlevel * 1.25 * 100
                 skillfightlevel[nextfightlevel] = True
                 PlayerFightEp = 0
                 fightlevel = nextfightlevel
 
-            elif PlayerFightEp/ (nextfightlevel * 200) * 100 > 100:
+            elif PlayerFightEp / (nextfightlevel * 200) * 100 > 100:
                 # Berechnung der übrigen EP
-                resultps = PlayerFightEp/ (nextfightlevel * 200) * 100
+                resultps = PlayerFightEp / (nextfightlevel * 200) * 100
                 resultps = (nextfightlevel * 200) / 100 * (resultps - 100)
                 PlayerFightEp = resultps
 
                 PLAYER[STRENGTH] = nextfightlevel * 1.25 * 100
                 skillfightlevel[nextfightlevel] = True
                 fightlevel = nextfightlevel
-                
+
 
     else:
         PLAYER[STRENGTH] = fightlevel * 1.25 * 100
@@ -147,6 +145,7 @@ def skills():
 
 def put(item):
     global run
+    print(item)
     if Hand:
         for i in Hand:
             Inventory.append(i)
@@ -159,8 +158,14 @@ def put(item):
     run = False
 
 
-def use(item):
+def use():
     pass
+
+
+def putinv(item):
+    for i in WEAPONS:
+        if i[NAME] == item and item != "hand":
+            Inventory.append(i)
 
 
 def inv():
@@ -169,7 +174,7 @@ def inv():
     os.system("cls")
     counter = 1
     for i in Inventory:
-        print(str(counter) + "\t" + i[NAME])
+        print(str(counter) + "\t" + i[NAME] + "\t" + str(i[ATTACK]) + " ad")
         counter += 1
 
     while run:
@@ -188,9 +193,54 @@ def inv():
 
     print("Your inventory was intresting!!")
 
+
 def update():
     global savelanguage
 
     # Nur jetzt wo es eine Sprache gibt
     if savelanguage == "":
         savelanguage = "en"
+
+
+def buy(item):
+    global COINS
+
+    for i in WEAPONS:
+
+        if i[NAME] == item:
+            if PLAYER[COINS] >= i[PRICE]:
+                PLAYER[COINS] = int(PLAYER[COINS]) - int(i[PRICE])
+                putinv(item)
+            else:
+                print("You have not enough money")
+
+
+def help_shop():
+    pass
+
+
+def shop():
+    os.system("cls")
+    print("Shop")
+
+    for i in WEAPONS:
+        if i[NAME] != "hand":
+            print(i[NAME] + "\tprice: " + str(i[PRICE]))
+
+    while True:
+
+        command = input(": ").lower().split(" ")
+
+        if command == "quit":
+            return False
+
+        if len(command) > 2 or len(command) == 1:
+            return print("Wrong input!!")
+
+        buy_commands = {
+            "buy": buy(command[1]),
+            "help": help_shop()
+        }
+
+        if command[0] in buy_commands:
+            buy_commands[command[0]]
