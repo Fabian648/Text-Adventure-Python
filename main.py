@@ -222,7 +222,7 @@ def game_load():
             print("Name is not Valid")
             game_load()
         else:
-            Logger.log("Fehler 0 in main.py" + Logger.lineno())
+            Logger.all_log("Fehler 0 in main.py" + Logger.lineno())
             sys.exit("Crit Problem in game_load siehe log")
 
         print("Player Charakter " + characters.PLAYER[characters.NAME] + " made")
