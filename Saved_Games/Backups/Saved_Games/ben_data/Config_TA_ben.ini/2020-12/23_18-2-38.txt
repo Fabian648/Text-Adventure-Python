@@ -1,0 +1,13 @@
+[config_TA]
+player = ben
+language = en
+coins = 12.0
+time = 175.69274306297302
+hp = 200.0
+
+[config_Game]
+
+[config_Skill]
+attacklevel = 2
+attackep = 0.0
+

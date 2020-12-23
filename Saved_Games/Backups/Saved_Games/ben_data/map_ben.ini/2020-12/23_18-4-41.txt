@@ -1,0 +1,3 @@
+[mapdata]
+mapdata = test
+

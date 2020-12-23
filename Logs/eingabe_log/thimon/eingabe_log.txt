@@ -1,0 +1,16 @@
+Sun Nov 22 20:10:20 2020 help
+Sun Nov 22 20:10:52 2020 player
+Sun Nov 22 20:11:01 2020 help
+Sun Nov 22 20:11:05 2020 skill
+Sun Nov 22 20:11:11 2020 forward
+Sun Nov 22 20:11:29 2020 forward
+Sun Nov 22 20:11:35 2020 left
+Sun Nov 22 20:11:39 2020 left
+Sun Nov 22 20:12:22 2020 left
+Sun Nov 22 20:12:24 2020 left
+Sun Nov 22 20:13:24 2020 rest
+Sun Nov 22 20:13:29 2020 save
+Sun Nov 22 20:13:33 2020 help
+Sun Nov 22 20:13:37 2020 shop
+Sun Nov 22 20:14:26 2020 end
+Sun Nov 22 20:15:32 2020 quit

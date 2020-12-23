@@ -1,4 +1,6 @@
-import os
+import os, sys
+from TA_Data.src.module_ta import Logger
+Logger = Logger()
 
 savetime = 0
 savelanguage = ""
@@ -11,6 +13,9 @@ DEFENCE = 3
 WEAPON = 4
 COINS = 5
 STRENGTH = 6
+SKILLS = []
+# Noch nicht inplementiert
+INVENTORY = []
 
 PlayerFightEp = 0
 nextfightlevel = 0
@@ -32,10 +37,12 @@ WEAPONS = (
 
 POSSIBLE_ENEMIES = (
     # hier wäre ein kurze beschreibung der werte nützlich
+    # NAME HEALTH DAMAGE DEFENCE WEAPON COINS STRENGTH
     ["ork", 200, 40, 1, 0, 2, 0],
     ["archer", 75, 50, 1, 0, 0.5, 0]
 )
 
+# Welches Skill Level ist ereicht
 skillfightlevel = {
     0: True,
     1: False,
@@ -45,13 +52,14 @@ skillfightlevel = {
 }
 
 Inventory = [["sword", 100, 250, True, False]]
+itemname = "sword"
 Hand = []
 
 ENEMY_COUNT = len(POSSIBLE_ENEMIES) - 1
 
 PLAYER_MAX_HEALTH = 200
 
-PLAYER = ["", PLAYER_MAX_HEALTH, 30, 5, 0, 0, 0]
+PLAYER = ["", PLAYER_MAX_HEALTH, 30, 5, 0, 0, 0, 0]
 
 rest_available = True
 rest_counter = 0
@@ -92,7 +100,7 @@ def die(character):
 def game_rest_player():
     global rest_counter, rest_available
 
-    if rest_available == True:
+    if rest_available:
 
         PLAYER[HEALTH] = PLAYER_MAX_HEALTH
         print("You were healed\nNow you have " + str(PLAYER[HEALTH]) + " hp")
@@ -106,7 +114,7 @@ def skillsupdate():
     global skillfightlevel, PlayerFightEp, nextfightlevel, fightlevel
 
     for i in skillfightlevel:
-        if skillfightlevel[i] == True:
+        if skillfightlevel[i]:
             fightlevel = i
             nextfightlevel = i + 1
 
@@ -129,7 +137,6 @@ def skillsupdate():
                 skillfightlevel[nextfightlevel] = True
                 fightlevel = nextfightlevel
 
-
     else:
         PLAYER[STRENGTH] = fightlevel * 1.25 * 100
 
@@ -144,7 +151,7 @@ def skills():
         print("Skills:\n\nFight:\tmax. level\n\n\n\n")
 
 
-def put(item):
+def invenv_put(item):
     global run
     print(item)
     if Hand:
@@ -159,7 +166,7 @@ def put(item):
     run = False
 
 
-def use():
+def invenv_use(item):
     pass
 
 
@@ -185,8 +192,8 @@ def inv():
             return print("You run around in circles and don't know what to do.")
 
         inv_commands = {
-            "use": use(command[1]),
-            "put": put(command[1])
+            "use": invenv_use(command[1]),
+            "put": invenv_put(command[1])
         }
 
         if command[0] in inv_commands:
@@ -203,45 +210,90 @@ def update():
         savelanguage = "en"
 
 
-def buy(item):
+def buy():
+
     global COINS
 
-    for i in WEAPONS:
+    def buy_item():
+        item = input("Item that you want to buy : ").lower()
+        if item in WEAPONS:
+            return item
+        elif item == "quit" or item == "leave":
+            return False
+        elif item == "help":
+            print("enter the name of the item you want to buy or -quit- to leave the shop")
+            buy_item()
+        else:
+            print("This item doesn't exist.")
+            buy_item()
 
-        if i[NAME] == item:
-            if PLAYER[COINS] >= i[PRICE]:
-                PLAYER[COINS] = int(PLAYER[COINS]) - int(i[PRICE])
-                putinv(item)
-            else:
-                print("You have not enough money")
+    buy_item_name = buy_item()
+    if buy_item_name:
+
+        for i in WEAPONS:
+
+            if i[NAME] == buy_item_name:
+                if PLAYER[COINS] >= i[PRICE]:
+                    PLAYER[COINS] = int(PLAYER[COINS]) - int(i[PRICE])
+                    putinv(buy_item_name)
+                    print("you bought " + buy_item_name + "and stored it in your backpack")
+                    return True
+                else:
+                    print("You don't have not enough money")
+                    return True
+
+    elif not buy_item_name:
+        return False
+    else:
+        Logger.all_log("Error code 2 in shop.py" + Logger.lineno())
+        sys.exit("Exit code 3")
 
 
 def help_shop():
-    pass
+    helper = ""
+    for i in shop_commands:
+        helper += "-" + i + "- "
+    print(helper)
+    return True
+
+
+def shop_quit():
+    return False
+
+
+shop_commands = {
+    "buy": buy,
+    "help": help_shop,
+    "quit": shop_quit
+        }
 
 
 def shop():
+
     os.system("cls")
-    print("Shop")
+    running_shop_loop = True
+    print("Shop \nYour coins = " + str(PLAYER[5]))
 
     for i in WEAPONS:
         if i[NAME] != "hand":
             print(i[NAME] + "\tprice: " + str(i[PRICE]))
 
-    while True:
+    while running_shop_loop:
 
-        command = input(": ").lower().split(" ")
+        shop_command = input(": ").lower()
 
-        if command == "quit":
-            return False
+        if shop_command in shop_commands:
+            running_shop_loop = shop_commands[shop_command]()
 
-        if len(command) > 2 or len(command) == 1:
-            return print("Wrong input!!")
+            if running_shop_loop:
+                True
 
-        buy_commands = {
-            "buy": buy(command[1]),
-            "help": help_shop()
-        }
+            elif not running_shop_loop:
+                print("You Leave the shop")
 
-        if command[0] in buy_commands:
-            buy_commands[command[0]]
+            else:
+                Logger.all_log("Error code 2 in shop.py" + Logger.lineno())
+                sys.exit("Exit code 3")
+
+        else:
+            print("this command is invalid. Type -help- to see the shop commands. ")
