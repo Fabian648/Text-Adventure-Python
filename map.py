@@ -1,7 +1,7 @@
 import random, os
 pathtodir = os.getcwd()
 import characters
-import probability
+import TA_Data.src.probability
 import sys
 from TA_Data.src.module_ta import Logger
 

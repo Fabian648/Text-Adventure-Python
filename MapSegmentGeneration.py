@@ -18,6 +18,8 @@ size = int(config.get("DUNGEON_MAP_GENERATION", "DUNGEON_MAP_SIZE"))
 prob_one = int(config.get("DUNGEON_MAP_GENERATION", "ENEMIES_PROBABILLITY"))
 prob_mult = int(config.get("DUNGEON_MAP_GENERATION", "ENEMIES_AMOUNT_PROBABILLITY"))
 max = int(config.get("DUNGEON_MAP_GENERATION", "ENEMIES_MAX_AMOUNT"))
+
+
 def create_new_map_segment():
 
     map = create_map_base(size)
@@ -25,6 +27,7 @@ def create_new_map_segment():
     set_enimies(map, prob_one, prob_mult, max)
     Logger.all_log("map segment has been populated with enimies")
     return map
+
 
 def set_enimies(map, prob_one=50, prob_mult=10 , max=4):
     """ This function spawns the enimies onto the map fields"""
@@ -53,7 +56,7 @@ def enemy_picker(restriction=None):
 
     configer.read('TA_Data\\game_data\\META_data\\Enemies_data.ini')
 
-    enemy_races = json.loads(configer.get("ENEMIES","ENEMY_TYPES")) 
+    enemy_races = json.loads(configer.get("ENEMIES", "ENEMY_TYPES")) 
     if restriction is not None:
         try:
             enemy_races = list(set(enemy_races) - set(restriction))
@@ -69,3 +72,4 @@ def enemy_picker(restriction=None):
 
         
     return enemy[1]
+

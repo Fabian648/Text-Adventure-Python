@@ -125,7 +125,11 @@ def load(extra=None):
     characters.PLAYER[characters.COINS] = float(cfg.get("config_TA", "coins"))
     characters.savetime = float(cfg.get("config_TA", "time"))
     characters.PLAYER[characters.HEALTH] = float(cfg.get("config_TA", "HP"))
-
+    player = {}
+    player["name"] = cfg.get("config_TA", "player")
+    player["money"] = cfg.get("config_TA", "coins")
+    player["health"] = cfg.get("config_TA", "hp")
+    """print(player)"""
     # Skilldaten
     characters.PlayerFightEp = float(cfg.get("config_Skill", "AttackEP"))
     characters.fightlevel = int(cfg.get("config_Skill", "Attacklevel"))
@@ -302,6 +306,7 @@ def quiter():
 def ender():
     exit(save("end"))
 
+
 commands = {
     "help" : game_help,
     "quit" : quiter,
@@ -321,7 +326,7 @@ commands = {
     "coins" : player_get_money,
     "player" : player_info,
     "skill" : characters.skills,
-    "shop" : characters.shop,
+    "shop" : characters.shop, # pass player
     "inv" : characters.inv,
     "use" : characters.invenv_use
 }
