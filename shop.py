@@ -11,7 +11,7 @@ config.read('TA_Data\\game_data\\META_data\\shop_data\\Weapons_data.ini')
 
 class Shop():
 
-    def __init__(self, player):
+    def __init__(self, player, commands):
         self.player = player
         self.weapons_close_combat = json.loads(config.get('WEAPONS_CLOSE_COMBAT', 'WEAPONS_CLOSE_COMBAT'))
         self.weapons_ranged = json.loads(config.get("WEAPONS_RANGED", "WEAPONS_RANGED"))
@@ -19,13 +19,13 @@ class Shop():
         self.available_items = []
         self.items = [self.weapons_close_combat, self.weapons_ranged, self.ammo]
         self.shop_item_id = {}
-        self.commands = {"buy": Shop.buy, "help": Shop.shop_help, "leave": Shop.shop_quit, "list items": Shop.shop_list_items}
+        self.commands = commands # {"buy": Shop.buy, "help": Shop.shop_help, "leave": Shop.shop_quit, "list items": Shop.shop_list_items}
 
 
     def shop(self):
         shop_commands = self.commands
 
-        os.system("cls")
+        #os.system("cls")
         print("---- \nShop \n---- \nYour coins = " + self.player["money"] + "\n")
 
         
@@ -116,4 +116,6 @@ class Shop():
 
 
 player = {'name': 'ben', 'money': '12.0', 'health': '200.0'}
-Shop(player).shop()
+commands = {"buy": Shop.buy, "help": Shop.shop_help, "leave": Shop.shop_quit, "list items": Shop.shop_list_items}
+
+Shop(player=player,commands=commands).shop()
