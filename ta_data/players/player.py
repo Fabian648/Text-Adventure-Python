@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-from character import Character
+from ta_data.character import Character
 
 class Player(Character):
 

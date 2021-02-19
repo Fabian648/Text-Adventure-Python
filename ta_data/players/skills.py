@@ -1,10 +1,10 @@
 import sys
 sys.path.append(".")
 
-from character import Character
+from player import Player
 
 
-class Skills(Character):
+class Skills(Player):
 
     def __init__(self):
         pass
