@@ -10,10 +10,15 @@ Skills
 
 class Character:
 
-    def __init__(self):
-        pass
+    def __init__(self, entity):
+        self.health = self.health(entity)
+        self.strength = self.strength(entity)
+        self.inventory = self.inventory(entity)
+        self.mana = self.mana(entity)
+        self.skills = self.skills(entity)
 
     def health(self):
+        
         pass
 
     def strength(self):
