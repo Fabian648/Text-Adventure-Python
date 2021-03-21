@@ -1,0 +1,53 @@
+name: version-update
+on:
+  push:
+    branches:
+       - master
+
+env:
+  CORE_VERSION_FILE: versions/core-version.txt
+  DB_VERSION_FILE: versions/db-version.txt
+
+jobs:
+  version-update:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8]
+    name: version-update
+    steps:
+      
+      # get git code
+      - name: Check out source repository
+        id: checkoutsourcerepo
+        uses: actions/checkout@v2
+        continue-on-error: true
+      
+      - name: user controll output versions before version update
+        run: |
+          echo "core version:"
+          cat ${{ env.CORE_VERSION_FILE}}
+          echo "db version:"
+          cat ${{ env.DB_VERSION_FILE}}
+          
+      # Generates the core version based on the db-version file
+      - name: Generate db-versions
+        uses: HardNorth/github-version-generate@v1.1.0
+        with:
+          version-source: file
+          version-file: ${{ env.CORE_VERSION_FILE}}
+          next-version-increment-patch: ${{ contains(env.VERSION_FRAGMENT, 'patch') }}
+          next-version-increment-minor: ${{ contains(env.VERSION_FRAGMENT, 'minor') }}
+          next-version-increment-major: ${{ contains(env.VERSION_FRAGMENT, 'major') }}
+
+      - name: Update the version files
+        run: |
+          git config --global user.email "benedikt.liebs@gmail.com"
+          git config --global user.name "bennexy"
+          echo ${{ env.NEXT_VERSION }} > ${{ env.CORE_VERSION_FILE}}
+          git add ${{ env.CORE_VERSION_FILE}}
+          git commit -m "version update"
+          git push
+
+
