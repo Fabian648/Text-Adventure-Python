@@ -52,9 +52,9 @@ def save(player):
 
     with open(os.path.join("Saved_Games", player.name + "_data", "Config_TA_" + player.name + ".ini"), "w") as file:
         file.write("[config_TA]")
-        file.write("name=" + str(player.name))
-        file.write("max_health=" + str(player.max_health))
-        file.write("health=" + str(player.health))
+        file.write("\nname=" + str(player.name))
+        file.write("\nmax_health=" + str(player.max_health))
+        file.write("\nhealth=" + str(player.health))
     
     print("game saved")
 

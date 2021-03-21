@@ -5,4 +5,6 @@ venv
 .vscode/settings.json
 Logs/full_log.txt
 Logs/eingabe_log/
-Saved_Games/*
+/*Saved_Games/*
+Saved_Games
+

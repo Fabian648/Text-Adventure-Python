@@ -36,11 +36,16 @@ def clear(player):
         os.system("cls")
     else:
         os.system("clear")
-    
+
+def exit(player):
+    save_game(player)
+    sys.exit("proper shutdown")
+
 commands = {
         'help': list_commands,
         'save': save_game,
-        'clear': clear
+        'clear': clear,
+        'exit': exit
         }
 
 

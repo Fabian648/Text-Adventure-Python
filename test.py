@@ -1,2 +1,3 @@
 with open ("file.ini", "w") as file:
-    file.write("1", 2)
+    file.writelines("1")
+    file.writelines("3")
