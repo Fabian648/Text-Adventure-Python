@@ -2,7 +2,7 @@ name: version-update
 on:
   push:
     branches:
-       - master
+       - dev
 
 env:
   CORE_VERSION_FILE: versions/core-version.txt
@@ -24,12 +24,13 @@ jobs:
         uses: actions/checkout@v2
         continue-on-error: true
       
-      - name: user controll output versions before version update
+      - name: user controll output versions before version update and change branch
         run: |
           echo "core version:"
           cat ${{ env.CORE_VERSION_FILE}}
           echo "db version:"
           cat ${{ env.DB_VERSION_FILE}}
+          git checkout dev
           
       # Generates the core version based on the db-version file
       - name: Generate db-versions

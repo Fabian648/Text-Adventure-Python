@@ -4,24 +4,29 @@ from ta_data.src.modules import Logger
 
 
 class TA_Error(Exception):
-    pass
+    def __init__(self, message=None, error=Exception):
+        Logger().error_log(logtext=message, error=error)
 
 class NotImplementedError(TA_Error):
     def __init__(self, message=None):
-        Logger().error_log(logtext=message, error=NotImplementedError)
+        super().__init__(message=message, error=NotImplementedError)
 
 class ModuleNotFoundError(TA_Error):
     def __init__(self, message=None):
-        Logger().error_log(logtext=message, error=ModuleNotFoundError)
+        super().__init__(message=message, error=ModuleNotFoundError)
 
 class NotARaceError(TA_Error):
     def __init__(self, message=None):
-        Logger().error_log(logtext=message, error=NotARaceError)
+        super().__init__(message=message, error=NotARaceError)
 
 class InvalidStats(TA_Error):
     def __init__(self, message=None):
-        Logger().error_log(logtext=message, error=InvalidStats)
+        super().__init__(message=message, error=InvalidStats)
         
 class InventoryIntegretyError(TA_Error):
     def __init__(self, message=None):
-        Logger().error_log(logtext=message, error=InventoryIntegretyError)
+        super().__init__(message=message, error=InventoryIntegretyError)
+
+class FileLoadError(TA_Error):
+    def __init__(self, message=None):
+        super().__init__(message=message, error=FileLoadError)

@@ -1,5 +1,5 @@
 import os, sys, time
-
+from rich import print
 from ta_data.src.character import load, new_player, save
 from ta_data.players.player import *
 from ta_data.src.TA_Errors import *
@@ -7,23 +7,32 @@ from ta_data.src.modules import Logger
 
 
 def game_load():
-    command = input("Spiel laden oder neues spiel beginnen: ")
-    new_commands = ["new", "New", "new game", "New game", "New Game"]
-    load_commands = ["load", "Load", "load game", "Load game", "Load Game"]
-    if command in new_commands:
+    command = input("load game or new game?: ").lower().split(" ")
+    new_commands = ["new", "neu"]
+    load_commands = ["load", "laden"]
+    # noch offen
+    delete_commands = ["delete", "löschen", "loeschen"]
+    if command[0] in new_commands:
         return new_player()
-    elif command in load_commands:
+    elif command[0] in load_commands:
         return load()
+    elif command[0] in delete_commands:
+        try:
+            print("delete not yet implemented")
+            raise NotImplementedError("delete fuction not yet implemented")
+        except NotImplementedError:
+            return None
     else:
+        print("command does not exsist")
         return game_load()
   
 def list_base_commands(player):
     for key in commands_base:
-        print("command", key)
+        print("[blue]command", key)
     
 def  list_player_commands(player):
     for key in commands_player:
-        print('command', key)
+        print('[blue]command', key)
 
 def save_game(player):
     save(player)
@@ -47,8 +56,10 @@ commands_base = {
         }
 
 commands_player = {
-    'inventory': list_inventory
-        }
+    'list inventory': list_inventory,
+    'player': list_player_stats
+}
+
 
 if __name__ == "__main__":
     if os.name == 'nt':
@@ -73,7 +84,7 @@ if __name__ == "__main__":
             if command in commands_base:
                 commands_base[command](player)
             elif command in commands_player:
-                commands_player[Player(player).command]
+                commands_player[command](player)
             else:
                 print("command does not exsist")
     except KeyboardInterrupt:

@@ -1,6 +1,8 @@
-import sys, regex as re, os, configparser
+import sys, regex as re, os, configparser, json
+from ta_data.src.TA_Errors import FileLoadError
 sys.path.append(".")
 from ta_data.players.player import Player
+from ta_data.src.modules import Logger
 
 def show_saved_games():
     try:
@@ -33,7 +35,26 @@ def load_player(name):
     cfg = configparser.ConfigParser()
     if os.path.isfile(os.path.join("Saved_Games", name + "_data", "Config_TA_" + name + ".ini")):
         cfg.read(os.path.join("Saved_Games", name + "_data", "Config_TA_" + name + ".ini"))
-    return Player(name=cfg.get("config_TA", "name"), max_health=cfg.get("config_TA", "max_health"), health=cfg.get("config_TA", "health"))
+    try:
+        return Player(
+            name=cfg.get("config_TA", "name"), 
+            max_health=cfg.get("config_TA", "max_health"), 
+            health=cfg.get("config_TA", "health"),
+            max_mana=cfg.get("config_TA", "max_mana"),
+            mana=cfg.get("config_TA", "mana"),
+            money=cfg.get("config_TA", "money"),
+            strength=cfg.get("config_TA", "strength"),
+            skills=json.loads(cfg.get("config_TA", "health")),
+            inventory=json.loads(cfg.get("Inventory", "backpack"))
+            )
+    except json.decoder.JSONDecodeError:
+        try:
+            raise FileLoadError("error loading " + str(os.path.join("Saved_Games", name + "_data", "Config_TA_" + name + ".ini")))
+        except FileLoadError:
+            print("There was a Error Loading the Requested save.")
+            return None
+        
+            
 
 def new_player():
     player_name = input("Please enter a player name: ").lower()
@@ -64,11 +85,11 @@ def save(player):
         file.write("\nmax_mana=" + str(player.max_mana))
         file.write("\nmana=" + str(player.mana))
         file.write("\nmoney=" + str(player.money))
-        file.write("\nskils=" + str(player.skills))
+        file.write("\nskils=" + json.dumps(player.skills))
         file.write("\nstrength=" + str(player.strength))
 
         file.write("\n\n[Inventory]")
-        file.write("\nbackpack=" + str(player.inventory))
+        file.write("\nbackpack=" + json.dumps(player.inventory))
     
     print("game saved")
 

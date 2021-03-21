@@ -12,7 +12,7 @@ Skills
 
 class Creature:
 
-    def __init__(self, max_health, health=None, max_mana=0, mana=None, skills=[], inventory=[], strength=1, money=0):
+    def __init__(self, max_health, health=None, max_mana=0, mana=None, skills={}, inventory={}, strength=1, money=0):
         self.max_health = max_health
         self.max_mana = max_mana
         self.strength = strength
