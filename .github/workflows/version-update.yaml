@@ -26,11 +26,12 @@ jobs:
       
       - name: user controll output versions before version update and change branch
         run: |
+          git checkout dev
           echo "core version:"
           cat ${{ env.CORE_VERSION_FILE}}
           echo "db version:"
           cat ${{ env.DB_VERSION_FILE}}
-          git checkout dev
+          
           
       # Generates the core version based on the db-version file
       - name: Generate db-versions
