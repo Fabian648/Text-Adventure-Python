@@ -3,15 +3,21 @@ sys.path.append(".")
 from ta_data.players.player import Player
 
 def show_saved_games():
-    match = re.findall(r"(\w+\s?)*(?=_data)", str(os.listdir("Saved_Games")))
-    for _ in match:
-        match.remove('')
-    return match
+    try:
+        match = re.findall(r"(\w+\s?)*(?=_data)", str(os.listdir("Saved_Games")))
+        for _ in match:
+            match.remove('')
+        return match
+    except FileNotFoundError:
+        print("No Games saved")
+        return []
 
 def load():
-
-    for char_name in show_saved_games():
-        print("Player " + char_name)
+    if show_saved_games() == []:
+        return new_player()
+    else:
+        for char_name in show_saved_games():
+            print("Player " + char_name)
 
     namedata = input("Please enter the name of the saved character: ").lower()
     
