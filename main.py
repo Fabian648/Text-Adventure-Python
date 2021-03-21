@@ -66,7 +66,12 @@ if __name__ == "__main__":
         os.system("cls")
     else:
         os.system("clear")
+    with open("versions/core-version.txt", "r")as file:
+        core_version = file.readline().rstrip()
+    with open("versions/db-version.txt", "r")as file:
+        db_version = file.readline().rstrip()
     
+    print("core version [bold red] " + core_version, "db version [bold red] " + db_version)
     player = None    
 
     try:
@@ -81,12 +86,14 @@ if __name__ == "__main__":
         while True:
        
             command = input(">").lower()
+
             if command in commands_base:
                 commands_base[command](player)
             elif command in commands_player:
                 commands_player[command](player)
             else:
                 print("command does not exsist")
+                
     except KeyboardInterrupt:
         print("\nshutting down")
     except TA_Error as e:
