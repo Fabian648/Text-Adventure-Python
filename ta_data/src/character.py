@@ -27,7 +27,7 @@ def load():
         return None
     else:
         print("Not a valid option. Please chose one of the players or >exit<")
-        load()
+        return load()
 
 def load_player(name):
     cfg = configparser.ConfigParser()
@@ -40,14 +40,14 @@ def new_player():
     if player_name == "list":
         for char_name in show_saved_games():
             print("Player name " + char_name)
-        new_player()
+        return new_player()
     elif player_name == "exit":
         return None
     elif player_name not in show_saved_games():
         return create_player(player_name)
     else:
         print("player name allready taken, type list to list all taken names")
-        new_player()
+        return new_player()
 
 def create_player(player_name):
     return Player(name=player_name, max_health=200)
@@ -61,6 +61,14 @@ def save(player):
         file.write("\nname=" + str(player.name))
         file.write("\nmax_health=" + str(player.max_health))
         file.write("\nhealth=" + str(player.health))
+        file.write("\nmax_mana=" + str(player.max_mana))
+        file.write("\nmana=" + str(player.mana))
+        file.write("\nmoney=" + str(player.money))
+        file.write("\nskils=" + str(player.skills))
+        file.write("\nstrength=" + str(player.strength))
+
+        file.write("\n\n[Inventory]")
+        file.write("\nbackpack=" + str(player.inventory))
     
     print("game saved")
 

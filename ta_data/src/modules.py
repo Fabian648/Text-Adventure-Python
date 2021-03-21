@@ -1,8 +1,10 @@
+import datetime
 import sys
 import os
 import time
 import inspect
 import os
+from datetime import datetime
 
 
 class Logger:
@@ -20,9 +22,9 @@ class Logger:
 
     def all_log(self, logtext):
         os = self.os
-        with open(os.path.join(os.getcwd(), "Logs\\full_log.txt"), "a") as logfile:
+        with open(os.path.join(os.getcwd(), "Logs", "full_log.txt"), "a") as logfile:
             logfile.seek(0, 0)
-            logfile.write(self.time() + " " + logtext + "\n")
+            logfile.write(str(datetime.now()) + " " + logtext + "\n")
 
     def eingabe_log(self, logtext, char_name):
         os = self.os
@@ -37,7 +39,12 @@ class Logger:
             ersteller.close()
 
         with open(file_loc, "a") as logfile:
-            logfile.write(self.time() + " " + logtext + "\n")
+            logfile.write(str(datetime.now()) + " " + logtext + "\n")
+
+    def error_log(self, logtext, error):
+        with open(os.path.join(os.getcwd(), "Logs", "error.log"), "a") as logfile:
+            logfile.seek(0, 0)
+            logfile.write(str(datetime.now()) + " " + str(error) + " " + logtext + "\n")
 
 class Backup:
 
