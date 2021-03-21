@@ -15,3 +15,6 @@ class ModuleNotFoundError(TA_Error):
 
 class NotARaceError(TA_Error):
     pass
+
+class InvalidStats(TA_Error):
+    pass

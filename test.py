@@ -1,5 +1,2 @@
-test_list = ["''", "test"]
-
-test_list.remove("''")
-
-print(test_list)
+with open ("file.ini", "w") as file:
+    file.write("1", 2)
