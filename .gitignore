@@ -3,8 +3,7 @@ venv
 /*.vscode/*
 .vscode
 .vscode/settings.json
-Logs/full_log.txt
-Logs/eingabe_log/
+Logs
 /*Saved_Games/*
 Saved_Games
 

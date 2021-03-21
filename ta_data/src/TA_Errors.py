@@ -22,5 +22,6 @@ class InvalidStats(TA_Error):
     def __init__(self, message=None):
         Logger().error_log(logtext=message, error=InvalidStats)
         
-        
-
+class InventoryIntegretyError(TA_Error):
+    def __init__(self, message=None):
+        Logger().error_log(logtext=message, error=InventoryIntegretyError)
