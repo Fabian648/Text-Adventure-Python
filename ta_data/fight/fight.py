@@ -15,9 +15,10 @@ def fight(player, enemy):
         print("[bold red]You have died to " + enemy.name +  " after " + str(round) + " rounds.")
     elif enemy.health == 0 and player.health > 0:
         print("[bold green]You have killed " + enemy.name + " after " + str(round) + " rounds. You have " + str(player.health) + " left.")
-        loot(player, enemy)
+        if player.health > 0:
+            loot(player, enemy)
     elif enemy.health == 0 and player.health == 0:
-        print("[bold red]You and your enemy " + enemy.name + " habe both died in combat.")
+        print("[bold red]You and your enemy " + enemy.name + " have both died in combat.")
     else:
         raise CriticalFightError("No known ending of fight " + player.name + " " + str(player.health) + " " + enemy.name + " " + str(enemy.health))
 
@@ -36,9 +37,11 @@ def deal_damage(player, enemy):
         enemy.health = 0
 
 def loot(player, enemy):
+    player.money += enemy.money
+    print("You have looted", "[bold #FFD700] " + str(enemy.money) )
     try:
-        raise NotImplementedError("loot is nor yet implemented")
+        raise NotImplementedError("looting asside from money looting is nor yet implemented")
     except NotImplementedError:
-        print("looting is not yet implemented")
+        print("looting asside from money looting is not yet implemented")
 
 

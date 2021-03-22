@@ -4,6 +4,7 @@ from ta_data.src.character import load, new_player, save
 from ta_data.players.player import *
 from ta_data.src.TA_Errors import *
 from ta_data.fight.fight import *
+from ta_data.shops.shop import *
 from ta_data.src.modules import Logger
 
 
@@ -67,6 +68,11 @@ commands_fight = {
     'fight': fight
 }
 
+commands_shop = {
+    'list': list_shop,
+    'buy': buy_shop
+}
+
 
 if __name__ == "__main__":
     if os.name == 'nt':
@@ -101,6 +107,9 @@ if __name__ == "__main__":
                 commands_player[command](player)
             elif command in commands_fight:
                 commands_fight[command](player, Human())
+            elif "shop" in command:
+                shop_enter(player, commands_shop=commands_shop)
+
             else:
                 print("command does not exsist")
 

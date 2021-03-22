@@ -1,119 +1,67 @@
-import random, os, json
-from configparser import ConfigParser
-import TA_Data.src.probability
-import sys
-from TA_Data.src.module_ta import Logger
-pathtodir = os.getcwd()
+import sys, configparser, json, os, rich
+sys.path.append(".")
+from ta_data.equipment.weapons import *
+cfg = configparser.ConfigParser()
+cfg.read(os.path.join("ta_data", "META_data", "shop_data", "Weapons_data.ini"))
 
-Logger = Logger()
-config = ConfigParser()
-config.read('TA_Data\\game_data\\META_data\\shop_data\\Weapons_data.ini')
-
-class Shop():
-
-    def __init__(self, player):
-        self.player = player
-        self.weapons_close_combat = json.loads(config.get('WEAPONS_CLOSE_COMBAT', 'WEAPONS_CLOSE_COMBAT'))
-        self.weapons_ranged = json.loads(config.get("WEAPONS_RANGED", "WEAPONS_RANGED"))
-        self.ammo = json.loads(config.get("AMMO", "AMMO"))
-        self.available_items = []
-        self.items = [self.weapons_close_combat, self.weapons_ranged, self.ammo]
-        self.shop_item_id = {}
-        self.commands = {"buy": Shop.buy, "help": Shop.shop_help, "leave": Shop.shop_quit, "list items": Shop.shop_list_items}
-
-
-    def shop(self):
-        shop_commands = self.commands
-
-        os.system("cls")
-        print("---- \nShop \n---- \nYour coins = " + self.player["money"] + "\n")
-
+class Shop:
+    def __init__(self, shop_type=None):
+        self.inventory = {}
+        if "melee" in shop_type:
+            self.load_inventory_melee()
         
-        
-        self.shop_list_items()
-
-        while True:
-            command = input(": ").lower().split(" ")
-            #print(type(command), len(command))
-            if command[0] in shop_commands and command[0] == "buy":
-                shop_commands[command[0]](self, command)
-            elif command[0] in shop_commands:
-                if shop_commands[command[0]](self) == "leave":
-                    break
-            else:
-                print("Input is not a command enter help to list all available commands")
-            
-    def buy(self, command=None):
-        command.pop(0)
-        Shop.id_items(self)
-        if command is not None and command != []:
-            item_to_buy = []
-            item_to_buy.append(" ".join(command).lower())
-        else:
-            item_to_buy = []
-            item_to_buy.append(input("item to buy: ").lower())
-        
-        
-        if item_to_buy[0] in self.shop_item_id:
-            for item_groups in self.items:
-                for item in item_groups:
-                    if self.shop_item_id[item_to_buy[0].lower()] == item[1]:
-                        item_to_buy.append(item[1])
-                        item_to_buy.append(item[2])                 
-
-                        validate = input("Are you sure you want to buy " + str(item_to_buy[0]) + " for " + str(item_to_buy[2]) + " coins? j/n : ").lower()
-                        if validate == "j" and Shop.check_for_finaces(self, item_to_buy[2]):
-                            
-                            print(True)
-                        else:
-                            print("You canceld the purchase.")
-
-        else:
-            print("not an available item" + item_to_buy[0], self.shop_item_id)
     
-    def shop_help(self):
-        
-        key_value = ""
-        for i in self.commands:
-            
-            if type(i) == list:
-                key_value = key_value + "-" + i[0] + ", "
-            elif type(i) == str:
-                try:
-                    i = int(i)
-                    pass
-                except:
-                    i = str(i)
-                    key_value = key_value + "-" + i + "- "
-            else:
-                Logger.all_log("Error 3 in shop.py " + Logger.lineno())
-                sys.exit("TypeError in shop.py")
-        print(key_value)
+    def load_inventory_melee(self):
+        weapon_list=json.loads(cfg.get("WEAPONS", "WEAPONS_CLOSE_COMBAT"))
+        item_list = []
+        for item in weapon_list:
+            #print(item)
+            item_list.append(MeleeWeapon(name=item[0], damage=item[1], durability=item[2], max_durability=item[2], price=item[3]))
+        self.inventory["Melee Weapons"] = item_list
+
+#base_shop = Shop(["melee"])
+#for item in base_shop.inventory["Melee Weapons"]:
+#    print(item.name)
+
+def list_shop(player, shop, cmd):
+    for key, value in shop.inventory.items():
+        print("----------------------------------------", key, "----------------------------------------")
+        rich.print(f"%-25s %-25s %-25s %-25s" % ("Name", "Damage", "Durability", "Price"))
+        for item in value:
+            #  print(key, item.price)
+            rich.print(f"[bold gray]%-25s [bold red]%-25s [bold #8B4513]%-25s [bold #FFD700]%-25s" % (item.name, item.damage, str(item.durability), item.price))
+
+def buy_shop(player, shop, cmd):
+    cmd[0] = ""
+    item_to_buy = ""
+    for element in cmd:
+        item_to_buy += element
+    print(item_to_buy)
+    itemnames = []
+    for key, value in shop.inventory.items():
+        for item in value:
+            itemnames.append([key, item.name.replace(" ", "").lower(), item.price, item])
+
+    def buy(itemnames, player):
+        for item in itemnames:
+            if item_to_buy == item[1]:
+                if "y" in input("Are you sure that you want to buy " + str(item[0]) + " " + str(item[1]) + " for " + str(item[2]) + " coins? (y/n): ").lower():
+                    if player.money - item[2] >= 0:
+                        player.money -= item[2]
+                        player.inventory[item[1]] = item[3]
+                    else:
+                        print("Couldn't buy item " + str(item[1]), "not enough money.")
     
-    def shop_list_items(self):
-        for item_group in self.items:
-            for item in item_group:
-                if item[0] != "Hand":
-                    print(f"name: {item[0]:25} price: {item[2]:10}")
-                    #  + {str(item[2]): 25}")
-                    #print("name: " + item[0] + "\t \tprice: " + str(item[2]))
 
-    def id_items(self):
-        for item_group in self.items:
-            for item in item_group:
-                self.shop_item_id[item[0].lower()] = item[1]
 
-    def check_for_finaces(self, itemcost):
-        if float(self.player["money"]) >= float(itemcost):
-            return True
+
+def shop_enter(player, commands_shop, shop_type=["melee"]):
+    print("Welcome in the Shop!")
+    while True:
+        command = input("Shop >").lower().split(" ")
+        if command[0] in commands_shop and command[0] != "exit":
+            commands_shop[command[0]](player, shop=Shop(shop_type), cmd=command)
+        elif command == "exit" or command == "leave":
+            break
         else:
-            missing = float(itemcost) - float(self.player["money"])
-            print("You are missing", missing, "coins to buy this item")
-            return(False)
-
-    def shop_quit(self):
-        return "leave"
-
-
-player = {'name': 'ben', 'money': '12.0', 'health': '200.0'}
-Shop(player).shop()
+            print("command does not exsist")
