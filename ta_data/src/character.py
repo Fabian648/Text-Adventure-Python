@@ -16,6 +16,7 @@ def show_saved_games():
 
 def load():
     if show_saved_games() == []:
+        print("No save found, please create a new one.")
         return new_player()
     else:
         for char_name in show_saved_games():
@@ -44,7 +45,7 @@ def load_player(name):
             mana=cfg.get("config_TA", "mana"),
             money=cfg.get("config_TA", "money"),
             strength=cfg.get("config_TA", "strength"),
-            skills=json.loads(cfg.get("config_TA", "health")),
+            skills=json.loads(cfg.get("config_TA", "skills")),
             inventory=json.loads(cfg.get("Inventory", "backpack"))
             )
     except json.decoder.JSONDecodeError:
@@ -54,8 +55,6 @@ def load_player(name):
             print("There was a Error Loading the Requested save.")
             return None
         
-            
-
 def new_player():
     player_name = input("Please enter a player name: ").lower()
     if player_name == "list":
@@ -85,7 +84,7 @@ def save(player):
         file.write("\nmax_mana=" + str(player.max_mana))
         file.write("\nmana=" + str(player.mana))
         file.write("\nmoney=" + str(player.money))
-        file.write("\nskils=" + json.dumps(player.skills))
+        file.write("\nskills=" + json.dumps(player.skills))
         file.write("\nstrength=" + str(player.strength))
 
         file.write("\n\n[Inventory]")

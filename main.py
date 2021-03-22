@@ -3,6 +3,7 @@ from rich import print
 from ta_data.src.character import load, new_player, save
 from ta_data.players.player import *
 from ta_data.src.TA_Errors import *
+from ta_data.fight.fight import *
 from ta_data.src.modules import Logger
 
 
@@ -56,8 +57,14 @@ commands_base = {
         }
 
 commands_player = {
-    'list inventory': list_inventory,
-    'player': list_player_stats
+    'list': list_inventory,
+    'player': list_player_stats,
+    'weapon': list_weapon_stats,
+    'heal': heal
+}
+
+commands_fight = {
+    'fight': fight
 }
 
 
@@ -72,6 +79,7 @@ if __name__ == "__main__":
         db_version = file.readline().rstrip()
     
     print("core version [bold red] " + core_version, "db version [bold red] " + db_version)
+    
     player = None    
 
     try:
@@ -91,9 +99,11 @@ if __name__ == "__main__":
                 commands_base[command](player)
             elif command in commands_player:
                 commands_player[command](player)
+            elif command in commands_fight:
+                commands_fight[command](player, Human())
             else:
                 print("command does not exsist")
-                
+
     except KeyboardInterrupt:
         print("\nshutting down")
     except TA_Error as e:

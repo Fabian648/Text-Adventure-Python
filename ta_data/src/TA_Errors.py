@@ -30,3 +30,7 @@ class InventoryIntegretyError(TA_Error):
 class FileLoadError(TA_Error):
     def __init__(self, message=None):
         super().__init__(message=message, error=FileLoadError)
+
+class CriticalFightError(TA_Error):
+    def __init__(self, message=None):
+        super().__init__(message=message, error=CriticalFightError)

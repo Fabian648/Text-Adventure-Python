@@ -1,7 +1,9 @@
+import configparser
+import json, os
+import configparser
+name = 'ben'
 
-name = "Ben"
+cfg = configparser.ConfigParser()
+cfg.read(os.path.join("Saved_Games", name + "_data", "Config_TA_" + name + ".ini"))
 
-from rich import print
-
-print(f"%-20s | [bold #FFD700]%25s" % ("player", "test"))
-print(f"%-20s | %25s" % ("player max health", "200"))
+print(type(json.loads(cfg.get("config_TA", "skils"))))
