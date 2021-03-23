@@ -52,9 +52,6 @@ def buy_shop(player, shop, cmd):
                     else:
                         print("Couldn't buy item " + str(item[1]), "not enough money.")
     
-
-
-
 def shop_enter(player, commands_shop, shop_type=["melee"]):
     print("Welcome in the Shop!")
     while True:
