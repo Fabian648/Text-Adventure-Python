@@ -52,6 +52,7 @@ def exit(player):
 commands_base = {
     'help': list_base_commands,
     'help player': list_player_commands,
+    'help shop': list_shop_commands,
     'save': save_game,
     'clear': clear,
     'exit': exit
@@ -70,7 +71,8 @@ commands_fight = {
 
 commands_shop = {
     'list': list_shop,
-    'buy': buy_shop
+    'buy': buy_shop,
+    'help': list_shop_commands
 }
 
 
@@ -100,6 +102,7 @@ if __name__ == "__main__":
         while True:
        
             command = input(">").lower()
+            Logger().eingabe_log(command, player.name)
 
             if command in commands_base:
                 commands_base[command](player)
@@ -107,7 +110,7 @@ if __name__ == "__main__":
                 commands_player[command](player)
             elif command in commands_fight:
                 commands_fight[command](player, Human())
-            elif "shop" in command:
+            elif "shop" == command:
                 shop_enter(player, commands_shop=commands_shop)
 
             else:
@@ -116,5 +119,8 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nshutting down")
     except TA_Error as e:
+        Logger().error_log("ta adventure error in main", e)
         print("A text-adventure error has occured, check the logs if this error is persitant")
-    
+    except Exception as e:
+        Logger().error_log("error in main", e)
+        print("[bold red]A non Text-Adventure error hast occured")

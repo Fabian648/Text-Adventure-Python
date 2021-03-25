@@ -12,11 +12,14 @@ from ta_data.equipment.weapons import *
 
 class Player(Creature):
 
-    def __init__(self, name, max_health, health=None, max_mana=0, mana=None, skills=[{}], max_inventory_slots=10, inventory=[{}], strength=1, money=0,  weapon=MeleeWeapon(damage=2, price=0)):
+    def __init__(self, name, max_health, health=None, max_mana=0, mana=None, skills=[{}], max_inventory_slots=10, inventory=[{}], strength=1, money=0,  weapon=None):
         super().__init__(max_health=max_health, health=health, max_mana=max_mana, mana=mana, inventory=inventory, skills=skills, strength=strength, money=money)
         self.name = name
         self.max_inventory_slots = max_inventory_slots
-        self.weapon = weapon
+        if weapon == None:
+            self.weapon = MeleeWeapon(damage=2, price=0)
+        else:
+            self.weapon = MeleeWeapon(id=weapon['id'], damage=weapon['damage'], durability=weapon['durability'], max_durability=weapon['max_durability'], name=weapon['name'])
 
 
 def add_item_to_inventory(player, item):

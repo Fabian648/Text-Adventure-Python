@@ -46,7 +46,8 @@ def load_player(name):
             money=cfg.get("config_TA", "money"),
             strength=cfg.get("config_TA", "strength"),
             skills=json.loads(cfg.get("config_TA", "skills")),
-            inventory=json.loads(cfg.get("Inventory", "backpack"))
+            inventory=json.loads(cfg.get("Inventory", "backpack")),
+            weapon=json.loads(cfg.get("config_TA", "weapon"))
             )
     except json.decoder.JSONDecodeError:
         try:
@@ -86,6 +87,7 @@ def save(player):
         file.write("\nmoney=" + str(player.money))
         file.write("\nskills=" + json.dumps(player.skills))
         file.write("\nstrength=" + str(player.strength))
+        file.write("\nweapon=" + json.dumps(player.weapon.__dict__))
 
         file.write("\n\n[Inventory]")
         file.write("\nbackpack=" + json.dumps(player.inventory))
