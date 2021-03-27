@@ -1,15 +1,16 @@
 import sys
 sys.path.append(".")
 from rich import print
-from ta_data.enemies.human import Human
+from random import randint, randint
+from ta_data.enemies.races import *
 from ta_data.src.TA_Errors import CriticalFightError, NotImplementedError
 
 def fight(player, enemy):
     round = 0
     while player.health > 0 and enemy.health > 0:
         round += 1
-        take_damage(player, enemy)
-        deal_damage(player, enemy)
+        if damage(player, enemy):
+            damage(enemy, player)
         
     if player.health == 0 and enemy.health > 0:
         print("[bold red]You have died to " + enemy.name +  " after " + str(round) + " rounds.")
@@ -22,25 +23,23 @@ def fight(player, enemy):
     else:
         raise CriticalFightError("No known ending of fight " + player.name + " " + str(player.health) + " " + enemy.name + " " + str(enemy.health))
 
-def take_damage(player, enemy):
-    health_after_attack = player.health - enemy.weapon.damage
-    if health_after_attack > 0:
-        player.health = health_after_attack
+def damage(attacker, defender):
+    if  randint(0, 100) <= attacker.weapon.accuracy:
+        health_after_attack = defender.health - (attacker.weapon.damage)
+        if health_after_attack > 0:
+            defender.health = health_after_attack
+            return True
+        else:
+            defender.health = 0
+            return False
     else:
-        player.health = 0
-
-def deal_damage(player, enemy):
-    health_after_attack = enemy.health - player.weapon.damage
-    if health_after_attack > 0:
-        enemy.health = health_after_attack
-    else:
-        enemy.health = 0
+        return True
 
 def loot(player, enemy):
     player.money += enemy.money
     print("You have looted", "[bold #FFD700] " + str(enemy.money) )
     try:
-        raise NotImplementedError("looting asside from money looting is nor yet implemented")
+        raise NotImplementedError("looting asside from money looting is not yet implemented")
     except NotImplementedError:
         print("looting asside from money looting is not yet implemented")
 

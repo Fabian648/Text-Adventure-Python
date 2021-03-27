@@ -3,7 +3,7 @@ sys.path.append(".")
 
 from rich import print
 from ta_data.creature import Creature
-from ta_data.enemies.human import Human
+from ta_data.enemies.races import Human
 from ta_data.src.TA_Errors import InvalidStats, InventoryIntegretyError, CriticalFightError
 from ta_data.equipment.weapons import *
 
@@ -19,7 +19,7 @@ class Player(Creature):
         if weapon == None:
             self.weapon = MeleeWeapon(damage=2, price=0)
         else:
-            self.weapon = MeleeWeapon(id=weapon['id'], damage=weapon['damage'], durability=weapon['durability'], max_durability=weapon['max_durability'], name=weapon['name'])
+            self.weapon = MeleeWeapon(id=weapon['id'], damage=weapon['damage'], durability=weapon['durability'], max_durability=weapon['max_durability'], name=weapon['name'], accuracy=weapon['accuracy'])
 
 
 def add_item_to_inventory(player, item):
@@ -50,6 +50,7 @@ def list_weapon_stats(player):
     print(f"%-25s [bold gray]%25s" % ("weapon name", player.weapon.name))
     print(f"%-25s [bold gray]%25s" % ("weapon damage", str(player.weapon.damage)))
     print(f"%-25s [bold gray]%25s" % ("weapon durability", str(player.weapon.durability) + "/" + str(player.weapon.max_durability)))
+    print(f"%-25s [bold gray]%25s" % ("weapon accuracy", str(player.weapon.accuracy)))
     print(f"%-25s [bold gray]%25s" % ("weapon price", str(player.weapon.price)))
     if isinstance(player.weapon, RangedWeapon):
         print(f"%-25s [bold gray]%25s" % ("weapon", player.weapon.range))

@@ -17,7 +17,13 @@ def game_load():
     if command[0] in new_commands:
         return new_player()
     elif command[0] in load_commands:
-        return load()
+        if len(command) == 1:
+            return load()
+        else:
+            command.remove("load")
+            name = ' '.join(command)
+            print(name)
+            return load(name)
     elif command[0] in delete_commands:
         try:
             print("delete not yet implemented")
@@ -32,9 +38,13 @@ def list_base_commands(player):
     for key in commands_base:
         print("[blue]command", key)
     
-def  list_player_commands(player):
+def list_player_commands(player):
     for key in commands_player:
         print('[blue]command', key)
+
+def list_shop_commands_main(player):
+    for key in commands_shop:
+        print("[blue]command", key)
 
 def save_game(player):
     save(player)
@@ -52,7 +62,7 @@ def exit(player):
 commands_base = {
     'help': list_base_commands,
     'help player': list_player_commands,
-    'help shop': list_shop_commands,
+    'help shop': list_shop_commands_main,
     'save': save_game,
     'clear': clear,
     'exit': exit
@@ -63,17 +73,17 @@ commands_player = {
     'player': list_player_stats,
     'weapon': list_weapon_stats,
     'heal': heal
-}
+        }
 
 commands_fight = {
     'fight': fight
-}
+        }
 
 commands_shop = {
     'list': list_shop,
     'buy': buy_shop,
     'help': list_shop_commands
-}
+        }
 
 
 if __name__ == "__main__":
@@ -81,9 +91,9 @@ if __name__ == "__main__":
         os.system("cls")
     else:
         os.system("clear")
-    with open("versions/core-version.txt", "r")as file:
+    with open(os.path.join("versions", "core-version.txt"), "r")as file:
         core_version = file.readline().rstrip()
-    with open("versions/db-version.txt", "r")as file:
+    with open(os.path.join("versions", "db-version.txt"), "r")as file:
         db_version = file.readline().rstrip()
     
     print("core version [bold red] " + core_version, "db version [bold red] " + db_version)
@@ -100,21 +110,26 @@ if __name__ == "__main__":
             os.system("clear")
 
         while True:
-       
-            command = input(">").lower()
-            Logger().eingabe_log(command, player.name)
+            try:
+        
+                command = input(">").lower()
+                Logger().eingabe_log(command, player.name)
 
-            if command in commands_base:
-                commands_base[command](player)
-            elif command in commands_player:
-                commands_player[command](player)
-            elif command in commands_fight:
-                commands_fight[command](player, Human())
-            elif "shop" == command:
-                shop_enter(player, commands_shop=commands_shop)
+                if command in commands_base:
+                    commands_base[command](player)
+                elif command in commands_player:
+                    commands_player[command](player)
+                elif command in commands_fight:
+                    commands_fight[command](player, Human())
+                elif "shop" == command:
+                    shop_enter(player, commands_shop=commands_shop)
 
-            else:
-                print("command does not exsist")
+                else:
+                    print("command does not exsist")
+            
+            except TA_Error as e:
+                Logger().error_log("ta adventure error in main", e)
+                print("A text-adventure error has occured, check the logs if this error is persitant")
 
     except KeyboardInterrupt:
         print("\nshutting down")

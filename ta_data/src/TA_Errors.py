@@ -34,3 +34,8 @@ class FileLoadError(TA_Error):
 class CriticalFightError(TA_Error):
     def __init__(self, message=None):
         super().__init__(message=message, error=CriticalFightError)
+
+class NoSavedGame(TA_Error):
+    def __init(self, message=None):
+        super().__init__(message=message, error=NoSavedGame)
+

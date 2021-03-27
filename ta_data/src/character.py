@@ -1,5 +1,5 @@
 import sys, regex as re, os, configparser, json
-from ta_data.src.TA_Errors import FileLoadError
+from ta_data.src.TA_Errors import FileLoadError, NoSavedGame
 sys.path.append(".")
 from ta_data.players.player import Player
 from ta_data.src.modules import Logger
@@ -14,28 +14,37 @@ def show_saved_games():
         print("No Games saved")
         return []
 
-def load():
-    if show_saved_games() == []:
-        print("No save found, please create a new one.")
-        return new_player()
-    else:
-        for char_name in show_saved_games():
-            print("Player " + char_name)
+def load(name=None):
+    if name == None:
+        if show_saved_games() == []:
+            print("No save found, please create a new one.")
+            return new_player()
+        else:
+            for char_name in show_saved_games():
+                print("Player " + char_name)
 
-    namedata = input("Please enter the name of the saved character: ").lower()
-    
-    if namedata in show_saved_games():
-        return load_player(namedata)
-    elif namedata == 'exit':
-        return None
+        namedata = input("Please enter the name of the saved character: ").lower()
+        
+        if namedata in show_saved_games():
+            return load_player(namedata)
+        elif namedata == 'exit':
+            return None
+        else:
+            print("Not a valid option. Please chose one of the players or >exit<")
+            return load()
     else:
-        print("Not a valid option. Please chose one of the players or >exit<")
-        return load()
+        return load_player(name)
 
 def load_player(name):
     cfg = configparser.ConfigParser()
     if os.path.isfile(os.path.join("Saved_Games", name + "_data", "Config_TA_" + name + ".ini")):
         cfg.read(os.path.join("Saved_Games", name + "_data", "Config_TA_" + name + ".ini"))
+    else:
+        try:
+            raise NoSavedGame("The save for the player " + name + " was not found")
+        except NoSavedGame:
+            print("No save with the player name " + name + " was found.")
+            return None
     try:
         return Player(
             name=cfg.get("config_TA", "name"), 
