@@ -1,5 +1,6 @@
 import os, sys, time
 from rich import print
+from ta_data.config import *
 from ta_data.src.character import load, new_player, save
 from ta_data.players.player import *
 from ta_data.src.TA_Errors import *
@@ -86,6 +87,8 @@ commands_shop = {
         }
 
 
+
+
 if __name__ == "__main__":
     if os.name == 'nt':
         os.system("cls")
@@ -97,9 +100,7 @@ if __name__ == "__main__":
         db_version = file.readline().rstrip()
     
     print("core version [bold red] " + core_version, "db version [bold red] " + db_version)
-    
-    player = None    
-
+    player = None
     try:
         while player == None:
             player = game_load()
