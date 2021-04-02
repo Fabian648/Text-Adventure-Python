@@ -1,11 +1,12 @@
 import sys
 sys.path.append(".")
 from rich import print
-from random import randint, randint
+from random import randint
 from ta_data.enemies.races import *
 from ta_data.src.TA_Errors import CriticalFightError, NotImplementedError
 
-def fight(player, enemy):
+def fight(player):
+    enemy = enemy_picker()
     round = 0
     while player.health > 0 and enemy.health > 0:
         #print(round)
@@ -44,4 +45,5 @@ def loot(player, enemy):
     except NotImplementedError:
         print("looting asside from money looting is not yet implemented")
 
-
+def enemy_picker():
+    return Human(randint(0,2))

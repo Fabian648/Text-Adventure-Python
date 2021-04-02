@@ -12,11 +12,8 @@ from ta_data.equipment.weapons import *
 
 class Player(Creature):
 
-    def __init__(self, name, max_health, health=None, max_mana=0, mana=None, skills=[{}], max_inventory_slots=10, inventory=[{}], strength=1, money=0,  weapon=0):
-        super().__init__(max_health=max_health, health=health, max_mana=max_mana, mana=mana, inventory=inventory, skills=skills, strength=strength, money=money)
-        self.name = name
-        self.max_inventory_slots = max_inventory_slots
-        self.weapon = weapon
+    def __init__(self, name, max_health, health=200, max_mana=0, mana=0, strength=1, money=0,  weapon=MeleeWeapon(0)):
+        super().__init__(name=name, max_health=max_health, health=health, max_mana=max_mana, mana=mana, strength=strength, money=money, weapon=weapon)
         
 
 def add_item_to_inventory(player, item):
@@ -41,7 +38,6 @@ def list_player_stats(player):
     print(f"%-25s [bold #FFD700]%25s" % ("player money", player.money))
     print(f"%-25s [bold gray]%25s" % ("player weapon", player.weapon.name))
 
-    print(f"%-25s [bold #8B4513]%25s" % ("player inventory", str(len(player.inventory[0])) + "/" + str(player.max_inventory_slots)))
 
 def list_weapon_stats(player):
     print(f"%-25s [bold gray]%25s" % ("weapon name", player.weapon.name))

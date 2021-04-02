@@ -121,7 +121,7 @@ if __name__ == "__main__":
                 elif command in commands_player:
                     commands_player[command](player)
                 elif command in commands_fight:
-                    commands_fight[command](player, Human())
+                    commands_fight[command](player)
                 elif "shop" == command:
                     shop_enter(player, commands_shop=commands_shop)
 

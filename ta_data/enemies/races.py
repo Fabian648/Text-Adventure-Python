@@ -1,44 +1,40 @@
 import sys
 sys.path.append(".")
 
-from ta_data.creature import Creature
 from ta_data.equipment.weapons import MeleeWeapon
+from ta_data.creature import Creature 
+import mysql.connector
+from ta_data.config import *
+
+mydb = mysql.connector.connect(host=DB, port=DB_PORT, user=DB_USER, password=DB_PASSWORD)
+mycursor = mydb.cursor()
+mycursor.execute("USE Enemies")
+
+
 
 class Human(Creature):
 
-    def __init__(self, name=None, max_health=200, health=None, max_mana=10, mana=None, skills=[{}], inventory=[{}], strength=2, money=4, weapon=None):
-        super().__init__(max_health=max_health, health=health, max_mana=max_mana, mana=mana, inventory=inventory, skills=skills, strength=strength, money=money)
-        if name == None:
-            self.name = "Human"
-        else:
-            self.name = name
-        if weapon == None:
-            self.weapon = MeleeWeapon(id=0)
-        else:
-            self.weapon = weapon
+    def __init__(self, id=1):
+        mycursor.execute("SELECT * FROM Human WHERE ID = '%s'" % id)
+        enemy_data = mycursor.fetchall()[0]
+        super().__init__(
+            name=enemy_data[1], 
+            money=enemy_data[2],
+            max_health=enemy_data[3], 
+            max_mana=enemy_data[4],
+            health=enemy_data[5], 
+            mana=enemy_data[6], 
+            strength=enemy_data[7],
+            weapon=MeleeWeapon(enemy_data[8])
+            )
+         
 
 class Ork(Creature):
 
-    def __init__(self, name=None, max_health=275, health=None, max_mana=10, mana=None, skills=[{}], inventory=[{}], strength=4, money=6, weapon=None):
-        super().__init__(max_health=max_health, health=health, max_mana=max_mana, mana=mana, inventory=inventory, skills=skills, strength=strength, money=money)
-        if name == None:
-            self.name = "Ork"
-        else:
-            self.name = name
-        if weapon == None:
-            self.weapon = MeleeWeapon(id=1)
-        else:
-            self.weapon = weapon
+    def __init__(self, id):
+        pass
 
 class Elf(Creature):
 
-    def __init__(self, name=None, max_health=250, health=None, max_mana=10, mana=None, skills=[{}], inventory=[{}], strength=2, money=16, weapon=None):
-        super().__init__(max_health=max_health, health=health, max_mana=max_mana, mana=mana, inventory=inventory, skills=skills, strength=strength, money=money)
-        if name == None:
-            self.name = "Ork"
-        else:
-            self.name = name
-        if weapon == None:
-            self.weapon = MeleeWeapon(id=2)
-        else:
-            self.weapon = weapon
+    def __init__(self, id):
+        pass

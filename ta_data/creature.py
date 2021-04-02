@@ -1,4 +1,5 @@
 
+from ta_data.equipment.weapons import MeleeWeapon
 from ta_data.src.TA_Errors import InvalidStats
 from ta_data.src.modules import Logger
 # Attribute eines wesens
@@ -12,20 +13,14 @@ Skills
 
 class Creature:
 
-    def __init__(self, max_health, health=None, max_mana=0, mana=None, skills={}, inventory={}, strength=1, money=0):
-        self.max_health = int(max_health)
-        self.max_mana = int(max_mana)
-        self.strength = int(strength)
-        self.inventory = inventory 
-        self.skills = skills
-        self.money = int(money)
-        if health == None:
-            self.health = int(max_health)
-        else:
-            self.health = int(health)
-        if mana == None:
-            self.mana = int(max_mana)
-        else:
-            self.mana = int(mana)
+    def __init__(self, name, max_health, health, max_mana, mana, strength, money, weapon):
+        self.name = name
+        self.max_health = max_health
+        self.max_mana = max_mana
+        self.strength = strength
+        self.money = money
+        self.health = health
+        self.mana = mana
+        self.weapon = weapon
     
      
