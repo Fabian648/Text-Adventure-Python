@@ -19,11 +19,11 @@ class Shop:
     def load_inventory_melee(self):
         mycursor = mydb.cursor()
         mycursor.execute("USE " + str(DB_NAME))
-        mycursor.execute("SELECT * FROM melee_weapons" )
+        mycursor.execute("SELECT * FROM weapons" )
         weapons_list = mycursor.fetchall()
         item_list = []
         for weapon in weapons_list:
-            item_list.append(MeleeWeapon(id = weapon[0], name = weapon[1], damage = weapon[2], accuracy = weapon[3], price = weapon[4], durability = weapon[6], max_durability= weapon[7]))
+            item_list.append(MeleeWeapon(id = weapon[0]))
         self.inventory['melee'] = item_list
 
         

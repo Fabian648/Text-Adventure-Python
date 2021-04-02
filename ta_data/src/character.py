@@ -1,7 +1,7 @@
 import sys, regex as re, os, configparser, json, time
+sys.path.append(".")
 from ta_data.equipment.weapons import MeleeWeapon
 from ta_data.src.TA_Errors import FileLoadError, NoSavedGame
-sys.path.append(".")
 from ta_data.players.player import Player
 from ta_data.src.modules import Logger
 import mysql.connector

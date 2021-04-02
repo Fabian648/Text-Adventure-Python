@@ -23,9 +23,11 @@ class Weapon:
         
 
 class MeleeWeapon(Weapon):
-    def __init__(self, id):
-        mycursor.execute("SELECT * FROM weapons WHERE ID = '%s'"% (str(id)))
-        weapon_data = mycursor.fetchall()[0]
+    def __init__(self, id, weapon_data=None):
+        if weapon_data == None:
+            mycursor.execute("SELECT * FROM weapons WHERE ID = '%s'"% (str(id)))
+            weapon_data = mycursor.fetchall()[0]
+        
         super().__init__(id=id, weapon_data=weapon_data)
 
 

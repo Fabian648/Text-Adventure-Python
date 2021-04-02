@@ -8,6 +8,7 @@ from ta_data.src.TA_Errors import CriticalFightError, NotImplementedError
 def fight(player, enemy):
     round = 0
     while player.health > 0 and enemy.health > 0:
+        #print(round)
         round += 1
         if damage(player, enemy):
             damage(enemy, player)

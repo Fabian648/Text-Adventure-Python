@@ -13,7 +13,7 @@ class Human(Creature):
         else:
             self.name = name
         if weapon == None:
-            self.weapon = MeleeWeapon(damage=2, accuracy=50)
+            self.weapon = MeleeWeapon(id=0)
         else:
             self.weapon = weapon
 
@@ -26,7 +26,7 @@ class Ork(Creature):
         else:
             self.name = name
         if weapon == None:
-            self.weapon = MeleeWeapon(damage=8, accuracy=15)
+            self.weapon = MeleeWeapon(id=1)
         else:
             self.weapon = weapon
 
@@ -39,6 +39,6 @@ class Elf(Creature):
         else:
             self.name = name
         if weapon == None:
-            self.weapon = MeleeWeapon(damage=1, accuracy=75)
+            self.weapon = MeleeWeapon(id=2)
         else:
             self.weapon = weapon
