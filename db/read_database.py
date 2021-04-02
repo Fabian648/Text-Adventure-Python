@@ -1,8 +1,11 @@
 import sys
 sys.path.append(".")
+from ta_data.equipment.weapons import MeleeWeapon
+
 import mysql.connector
 from ta_data.config import *
 from ta_data.shops.shop import Shop
+
 
 mydb = mysql.connector.connect(
     host=DB,
@@ -21,10 +24,18 @@ def read_database(ID, FIELD, KIND):
     
     print(myresult)
 
-read_database("1", "*", "melee_weapons")
+#read_database("1", "*", "melee_weapons")
 
 print("-"*100)
 
 
-mycursor = mydb.cursor()
+#mycursor = mydb.cursor()
+#mycursor.execute("SELECT * FROM weapons WHERE ID = '%s'"% (str(id)))
+#weapon_data = mycursor.fetchall()
+
+
+print(MeleeWeapon(1))
+
+
+
 #print(mycursor.execute("SELECT COUNT (*) FROM melee_weapons;"))

@@ -1,8 +1,13 @@
-import sys, regex as re, os, configparser, json
+import sys, regex as re, os, configparser, json, time
+from ta_data.equipment.weapons import MeleeWeapon
 from ta_data.src.TA_Errors import FileLoadError, NoSavedGame
 sys.path.append(".")
 from ta_data.players.player import Player
 from ta_data.src.modules import Logger
+import mysql.connector
+from ta_data.config import *
+
+mydb = mysql.connector.connect(host=DB, port=DB_PORT, user=DB_USER, password=DB_PASSWORD)
 
 def show_saved_games():
     try:
@@ -33,6 +38,7 @@ def load(name=None):
             print("Not a valid option. Please chose one of the players or >exit<")
             return load()
     else:
+        print(load_player(name))
         return load_player(name)
 
 def load_player(name):
@@ -46,18 +52,24 @@ def load_player(name):
             print("No save with the player name " + name + " was found.")
             return None
     try:
+        mycursor = mydb.cursor()
+        mycursor.execute("USE TAUsers")
+        mycursor.execute("SELECT * FROM UserData WHERE Name = '%s'" % str(name))
+        
+        player_data = mycursor.fetchall()[0]
+        print(player_data[7])
+
         return Player(
-            name=cfg.get("config_TA", "name"), 
-            max_health=cfg.get("config_TA", "max_health"), 
-            health=cfg.get("config_TA", "health"),
-            max_mana=cfg.get("config_TA", "max_mana"),
-            mana=cfg.get("config_TA", "mana"),
-            money=cfg.get("config_TA", "money"),
-            strength=cfg.get("config_TA", "strength"),
-            skills=json.loads(cfg.get("config_TA", "skills")),
-            inventory=json.loads(cfg.get("Inventory", "backpack")),
-            weapon=json.loads(cfg.get("config_TA", "weapon"))
+            name=player_data[0], 
+            money=player_data[1],
+            max_health=player_data[2], 
+            max_mana=player_data[3],
+            health=player_data[4],
+            mana=player_data[5],
+            strength=player_data[6],
+            weapon=MeleeWeapon(player_data[7])
             )
+
     except json.decoder.JSONDecodeError:
         try:
             raise FileLoadError("error loading " + str(os.path.join("Saved_Games", name + "_data", "Config_TA_" + name + ".ini")))
@@ -83,7 +95,8 @@ def create_player(player_name):
     return Player(name=player_name, max_health=200)
     
 def save(player):
-    if not os.path.isfile(os.path.join("Saved_Games", player.name + "_data", "Config_TA_" + player.name + ".ini")):
+    
+    """if not os.path.isfile(os.path.join("Saved_Games", player.name + "_data", "Config_TA_" + player.name + ".ini")):
         os.makedirs(os.path.join("Saved_Games", player.name + "_data"))
 
     with open(os.path.join("Saved_Games", player.name + "_data", "Config_TA_" + player.name + ".ini"), "w") as file:
@@ -100,7 +113,23 @@ def save(player):
 
         file.write("\n\n[Inventory]")
         file.write("\nbackpack=" + json.dumps(player.inventory))
-    
+        """
+    mycursor = mydb.cursor()
+    mycursor.execute("USE TAUsers")
+
+    mycursor.execute(f"UPDATE UserData SET MaxHealth = '%s' WHERE Name = '%s'" %(player.max_health, player.name))
+    mycursor.execute(f"UPDATE UserData SET MaxMana = '%s' WHERE Name = '%s'" %(player.max_mana, player.name))
+    mycursor.execute(f"UPDATE UserData SET Health = '%s' WHERE Name = '%s'" %(player.health, player.name))
+    mycursor.execute(f"UPDATE UserData SET Mana = '%s' WHERE Name = '%s'" %(player.mana, player.name))
+    mycursor.execute(f"UPDATE UserData SET Health = '%s' WHERE Name = '%s'" %(player.health, player.name))
+    mycursor.execute(f"UPDATE UserData SET Money = '%s' WHERE Name = '%s'" %(player.money, player.name))
+    mycursor.execute(f"UPDATE UserData SET Weapon = '%s' WHERE Name = '%s'" %(player.weapon.id, player.name))
+    mycursor.execute(f"UPDATE UserData SET Strength = '%s' WHERE Name = '%s'" %(player.strength, player.name))
+
+    mydb.commit()
+    #sql = "INSERT INTO UserData (Name, Money, MaxHealth, MaxHealth, Health, Mana, Strength, Weapon) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    #val = [(player.name, player.money, player.max_health, player.max_mana, player.health, player.mana, player.strength, player.weapon.id)]
+
     print("game saved")
 
 

@@ -1,5 +1,8 @@
+import sys
+sys.path.append(".")
 import mysql.connector
 from ta_data.config import *
+from ta_data.src.character import load_player
 
 mydb = mysql.connector.connect(
     host=DB,
@@ -10,7 +13,7 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-mycursor.execute("CREATE DATABASE TextAdventure")
+#mycursor.execute("CREATE DATABASE TextAdventure")
 
 """
 # Zur Testung
@@ -20,8 +23,8 @@ for x in mycursor:
     print(x)
 """
 
-mycursor.execute("use TextAdventure")
-mycursor.execute("CREATE TABLE weapons (ID int, NAME VARCHAR(255), DAMAGE int, ACCURACY int, PRICE int, REACH int, DURABILITY int)")
+#mycursor.execute("use TextAdventure")
+#mycursor.execute("CREATE TABLE weapons (ID int, NAME VARCHAR(255), DAMAGE int, ACCURACY int, PRICE int, REACH int, DURABILITY int)")
 
 """
 # Zur Testung
@@ -33,15 +36,15 @@ for x in mycursor:
   print(x)
 """
 
-#mycursor.execute("use Textdatabase")
-sql = "INSERT INTO weapons (ID, NAME, DAMAGE, ACCURACY, PRICE, REACH, DURABILITY) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-val = [
-  (0, 'Fist', 1, 1, 0, 0, -1),
-  (1, 'Pebel', 1, 1, 0, 2, -1)
-]
+player = load_player("ben")
 
-mycursor.executemany(sql, val)
+mycursor.execute("use TAUsers")
+#mycursor.execute("CREATE TABLE UserData (Name VARCHAR(100), Money int, MaxHealth int, MaxMana int, Health int, Mana int, Strength int, Weapon int)")
+#sql = "INSERT INTO UserData (Name, Money, MaxHealth, MaxMana, Health, Mana, Strength, Weapon) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+#val = [(player.name, player.money, player.max_health, player.max_mana, player.health, player.mana, player.strength, player.weapon.id)]
+print(f"UPDATE UserData SET MaxHealth = '%s' WHERE Name = '%s'" %(player.max_health, player.name))
+#mycursor.executemany(sql, val)
 
-mydb.commit()
+#mydb.commit()
 
-print(mycursor.rowcount, "was inserted.")
+#print(mycursor.rowcount, "was inserted.")
