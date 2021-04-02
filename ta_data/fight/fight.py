@@ -16,6 +16,9 @@ def fight(player):
         
     if player.health == 0 and enemy.health > 0:
         print("[bold red]You have died to " + enemy.name +  " after " + str(round) + " rounds.")
+        lost_money = randint(0, int(int(player.money)/8))
+        player.money -= lost_money
+        print("[bold red]You have lost [bold #FFD700]%s [bold red]coins."% lost_money)
     elif enemy.health == 0 and player.health > 0:
         print("[bold green]You have killed " + enemy.name + " after " + str(round) + " rounds. You have " + str(player.health) + " left.")
         if player.health > 0:
