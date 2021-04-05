@@ -1,4 +1,5 @@
 import sys, regex as re, os, configparser, json, time
+from unicodedata import name
 sys.path.append(".")
 from ta_data.equipment.weapons import MeleeWeapon
 from ta_data.src.TA_Errors import FileLoadError, NoSavedGame
@@ -9,73 +10,40 @@ from ta_data.config import *
 
 mydb = mysql.connector.connect(host=DB, port=DB_PORT, user=DB_USER, password=DB_PASSWORD)
 
-def show_saved_games():
-    try:
-        match = re.findall(r"(\w+\s?)*(?=_data)", str(os.listdir("Saved_Games")))
-        for _ in match:
-            match.remove('')
-        return match
-    except FileNotFoundError:
-        print("No Games saved")
-        return []
-
 def load(name=None):
     if name == None:
-        if show_saved_games() == []:
-            print("No save found, please create a new one.")
-            return new_player()
-        else:
-            for char_name in show_saved_games():
-                print("Player " + char_name)
-
-        namedata = input("Please enter the name of the saved character: ").lower()
-        
-        if namedata in show_saved_games():
-            return load_player(namedata)
-        elif namedata == 'exit':
+        name = input("Enter the playername that you want to load: ")
+        if 'exit' in name or 'leave' in name:
             return None
-        else:
-            print("Not a valid option. Please chose one of the players or >exit<")
-            return load()
-    else:
-        print(load_player(name))
-        return load_player(name)
 
-def load_player(name):
-    cfg = configparser.ConfigParser()
-    if os.path.isfile(os.path.join("Saved_Games", name + "_data", "Config_TA_" + name + ".ini")):
-        cfg.read(os.path.join("Saved_Games", name + "_data", "Config_TA_" + name + ".ini"))
-    else:
-        try:
-            raise NoSavedGame("The save for the player " + name + " was not found")
-        except NoSavedGame:
-            print("No save with the player name " + name + " was found.")
-            return None
+    return load_player(name)
+
+def load_player(famname, name):
+    
     try:
         mycursor = mydb.cursor()
         mycursor.execute("USE TAUsers")
-        mycursor.execute("SELECT * FROM UserData WHERE Name = '%s'" % str(name))
+        mycursor.execute("SELECT * FROM UserDataDev WHERE Familyname = '%s' AND Name = '%s'" % (str(famname), str(name)))
         
         player_data = mycursor.fetchall()[0]
-        print(player_data[7])
-
-        return Player(
-            name=player_data[0], 
-            money=player_data[1],
-            max_health=player_data[2], 
-            max_mana=player_data[3],
-            health=player_data[4],
-            mana=player_data[5],
-            strength=player_data[6],
-            weapon=MeleeWeapon(player_data[7])
+        print(player_data)
+        player = Player(
+            family_name=player_data[0], 
+            name=player_data[2],
+            money=player_data[3],
+            max_health=player_data[4], 
+            max_mana=player_data[5],
+            health=player_data[6],
+            mana=player_data[7],
+            strength=player_data[8],
+            weapon=MeleeWeapon(player_data[9])
             )
 
-    except json.decoder.JSONDecodeError:
-        try:
-            raise FileLoadError("error loading " + str(os.path.join("Saved_Games", name + "_data", "Config_TA_" + name + ".ini")))
-        except FileLoadError:
-            print("There was a Error Loading the Requested save.")
-            return None
+        return player
+
+    except:
+        print("no such save was found")
+        return 
         
 def new_player():
     player_name = input("Please enter a player name: ").lower()
@@ -92,7 +60,15 @@ def new_player():
         return new_player()
 
 def create_player(player_name):
-    return Player(name=player_name, max_health=200)
+    mycursor = mydb.cursor()
+    mycursor.execute("USE TAUsers")
+    player = Player(name=player_name, max_health=200)
+    sql = "INSERT INTO UserData (Name, Money, MaxHealth, MaxMana, Health, Mana, Strength, Weapon) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    val = [(player.name, player.money, player.max_health, player.max_mana, player.health, player.mana, player.strength, player.weapon.id)]
+    mycursor.executemany(sql, val)
+    mydb.commit()
+    print("yaaaa")
+    return player
     
 def save(player):
     
@@ -132,13 +108,38 @@ def save(player):
 
     print("game saved")
 
+def list_saved_players(famname):
+    mycursor = mydb.cursor()
+    mycursor.execute("USE TAUsers")
+    mycursor.execute("SELECT Name FROM UserDataDev WHERE Familyname='" + famname + "'")
+    player_names = mycursor.fetchall()
+    playername_list = []
+    for playername in player_names:
+        print(" -" +str(playername[0]))
+        playername_list.append(playername[0])
+    return playername_list
 
+def check_password(pass_hash):
+    password = input("Please enter your Password: ")
+    print(pass_hash, password)
+    if pass_hash == password:
+        return True
+    else:
+        print("the password was invalid")
+        return False
 
-
-
-
-
-
+def chose_player(player_list, familyname):
+    command = str(input("Please enter a playername or create a new one: "))
+    if 'exit' in command:
+        return None
+    elif command in player_list:
+        return load_player(familyname, command)
+    elif 'create' in command or 'new' in command:
+        return create_player(player_list, familyname)
+    else:
+        print("Enterd value is not known")
+        return chose_player(player_list, familyname)
+    
 
 
 

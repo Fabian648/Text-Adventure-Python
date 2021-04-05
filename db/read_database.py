@@ -17,14 +17,14 @@ mydb = mysql.connector.connect(
 def read_database(ID, FIELD, KIND):
     mycursor = mydb.cursor()
     mycursor.execute("USE " + str(DB_NAME))
-    mycursor.execute("SELECT " + FIELD + " FROM " + KIND )#+ " WHERE ID = " + str(ID))
+    mycursor.execute("SELECT Name FROM " + KIND )#+ " WHERE ID = " + str(ID))
 
 
     myresult = mycursor.fetchall()
     
     print(myresult)
 
-#read_database("1", "*", "melee_weapons")
+read_database("1", "*", "weapons")
 
 print("-"*100)
 

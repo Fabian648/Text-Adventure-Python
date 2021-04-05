@@ -9,14 +9,14 @@ def fight(player):
     enemy = enemy_picker()
     round = 0
     while player.health > 0 and enemy.health > 0:
-        #print(round)
+        print(round)
         round += 1
         if damage(player, enemy):
             damage(enemy, player)
         
     if player.health == 0 and enemy.health > 0:
         print("[bold red]You have died to " + enemy.name +  " after " + str(round) + " rounds.")
-        lost_money = randint(0, int(int(player.money)/8))
+        lost_money = randint(0, int(int(player.money)/8      ))
         player.money -= lost_money
         print("[bold red]You have lost [bold #FFD700]%s [bold red]coins."% lost_money)
     elif enemy.health == 0 and player.health > 0:

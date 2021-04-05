@@ -1,40 +1,73 @@
-import os, sys, time
+import os, sys, time, mysql.connector
 from rich import print
 from ta_data.config import *
-from ta_data.src.character import load, new_player, save
+from ta_data.src.character import *
 from ta_data.players.player import *
 from ta_data.src.TA_Errors import *
 from ta_data.fight.fight import *
 from ta_data.shops.shop import *
 from ta_data.src.modules import Logger
+from ta_data.config import *
+
+
+mydb = mysql.connector.connect(
+    host=DB,
+    port=DB_PORT,
+    user=DB_USER,
+    password=DB_PASSWORD
+)
+mycursor = mydb.cursor()
 
 
 def game_load():
-    command = input("load game or new game?: ").lower().split(" ")
-    new_commands = ["new", "neu"]
-    load_commands = ["load", "laden"]
-    # noch offen
-    delete_commands = ["delete", "löschen", "loeschen"]
-    if command[0] in new_commands:
-        return new_player()
-    elif command[0] in load_commands:
-        if len(command) == 1:
-            return load()
+    loginorregister = input("Login or Register?: ").lower()
+    if 'l' in loginorregister:
+        famname = str(input("Please enter the Family name: "))
+        mycursor.execute("USE TAUsers")
+        mycursor.execute("SELECT Password FROM UserDataDev WHERE Familyname='" + famname + "'")
+        password_hash = mycursor.fetchall()
+        #print("----", password_hash, "----", type(password_hash), "----")
+        if password_hash != []:
+            if check_password(password_hash[0][0]) == True:
+                playernames = list_saved_players(famname)
+                return chose_player(playernames, famname)
         else:
-            command.remove("load")
-            name = ' '.join(command)
-            print(name)
-            return load(name)
-    elif command[0] in delete_commands:
-        try:
-            print("delete not yet implemented")
-            raise NotImplementedError("delete fuction not yet implemented")
-        except NotImplementedError:
-            return None
+            try:
+                raise NoSavedGame("No Saved Game was found under the name " + famname)
+            except NoSavedGame:
+                print("No saved Family was found with the given name.")
+                return game_load()
+
+            
+"""
+command = input("Load Player or New Player?: ").lower().split(" ")
+new_commands = ["new", "neu"]
+load_commands = ["load", "laden"]
+# noch offen
+delete_commands = ["delete", "löschen", "loeschen"]
+if command[0] in new_commands:
+    return new_player()
+elif command[0] in load_commands:
+    if len(command) == 1:
+        return load()
+    elif 'player' in command[1]:
+        return load()
     else:
-        print("command does not exsist")
-        return game_load()
-  
+        command.remove("load")
+        name = ' '.join(command)
+        print(name)
+        return load(name)
+elif command[0] in delete_commands:
+    try:
+        print("delete not yet implemented")
+        raise NotImplementedError("delete fuction not yet implemented")
+    except NotImplementedError:
+        return None
+else:
+    print("command does not exsist")
+    return game_load()
+"""  
+
 def list_base_commands(player):
     for key in commands_base:
         print("[blue]command", key)
@@ -126,7 +159,7 @@ if __name__ == "__main__":
                     shop_enter(player, commands_shop=commands_shop)
 
                 else:
-                    print("command does not exsist")
+                    print("command does not exist")
             
             except TA_Error as e:
                 Logger().error_log("ta adventure error in main", e)
